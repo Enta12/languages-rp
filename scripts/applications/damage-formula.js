@@ -1,5 +1,6 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 const { ArrayField, BooleanField, SchemaField, SetField, StringField } = foundry.data.fields;
+import { STATIC_CONFIG, dnd5eUtilities } from "../static-config.js";
 
 /**
  * @typedef {object} DamageConfig
@@ -223,22 +224,18 @@ export default class DamageFormulaDialog extends HandlebarsApplicationMixin(Appl
  * Modèle de données utilitaire.
  */
 class DamageFormulaModel extends foundry.abstract.DataModel {
-  /** @inheritdoc */
+  /** @override */
   static defineSchema() {
     return {
-      average: new BooleanField({
-        label: "DND.DIALOG.AVERAGE",
-      }),
-      extended: new BooleanField({
-        label: "DND.DIALOG.EXTENDED",
-      }),
       parts: new ArrayField(new SchemaField({
-        formula: new dnd5e.dataModels.fields.FormulaField({ required: true }),
+        formula: new dnd5eUtilities.dataModels.fields.FormulaField({ required: true }),
         types: new SetField(new StringField({
-          required: true,
-          choices: CONFIG.DND5E.damageTypes,
-        })),
-      }))
+          choices: STATIC_CONFIG.damageTypes,
+          initial: []
+        }))
+      }), { initial: [{ formula: "", types: new Set() }] }),
+      average: new BooleanField(),
+      extended: new BooleanField()
     };
   }
 }

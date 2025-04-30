@@ -19,10 +19,12 @@ const MENU_CATEGORIES = [
   "creatureTypes"
 ];
 
+const MODULE_ID = "languages-rp-fork";
+
 //region Hook
 Hooks.once("init", () => {
   // Enregistrement d'un sous-menu de configuration
-  game.settings.registerMenu("dnd-easy-reference", "menuConfig", {
+  game.settings.registerMenu(MODULE_ID, "menuConfig", {
     name: game.i18n.localize("DND.SETTINGS.MENU.TITLE"),
     label: game.i18n.localize("DND.SETTINGS.MENU.LABEL"),
     hint: game.i18n.localize("DND.SETTINGS.MENU.HINT"),
@@ -32,7 +34,7 @@ Hooks.once("init", () => {
   });
 
   // Elargir ou non la fenêtre item
-  game.settings.register("dnd-easy-reference", "widenItemWindows", {
+  game.settings.register(MODULE_ID, "widenItemWindows", {
     name: game.i18n.localize("DND.SETTINGS.PROSEGAP.TITLE"),
     hint: game.i18n.localize("DND.SETTINGS.PROSEGAP.HINT"),
     scope: "world",
@@ -51,14 +53,14 @@ Hooks.once("init", () => {
 
   Hooks.once("ready", () => {
     // Appliquer le style au chargement si le paramètre est activé
-    if (game.settings.get("dnd-easy-reference", "widenItemWindows")) {
+    if (game.settings.get(MODULE_ID, "widenItemWindows")) {
       document.documentElement.classList.add("dnd-widen-windows");
     }
   });
 
   // Enregistrement des paramètres pour chaque catégorie de menu
   MENU_CATEGORIES.forEach((category) => {
-    game.settings.register("dnd-easy-reference", `show${category}`, {
+    game.settings.register(MODULE_ID, `show${category}`, {
       name: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.TITLE`),
       hint: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.HINT`),
       scope: "world",
@@ -93,7 +95,7 @@ class DnDMenuConfigV2 extends HandlebarsApplicationMixin(ApplicationV2) {
 
   static PARTS = {
     dnd: {
-      template: "modules/dnd-easy-reference/templates/menu-config.hbs",
+      template: "modules/languages-rp-fork/templates/menu-config.hbs",
     },
     footer: {
       template: "templates/generic/form-footer.hbs",
@@ -106,7 +108,7 @@ class DnDMenuConfigV2 extends HandlebarsApplicationMixin(ApplicationV2) {
         id: category,
         name: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.TITLE`),
         hint: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.HINT`),
-        checked: game.settings.get("dnd-easy-reference", `show${category}`),
+        checked: game.settings.get(MODULE_ID, `show${category}`),
       })),
       buttons: [
         { type: "submit", icon: "fa-solid fa-save", label: "SETTINGS.Save" },
@@ -119,7 +121,7 @@ class DnDMenuConfigV2 extends HandlebarsApplicationMixin(ApplicationV2) {
     await Promise.all(
       Object.entries(settings).map(([key, value]) => {
         const settingKey = key.startsWith("show") ? key : `show${key}`;
-        return game.settings.set("dnd-easy-reference", settingKey, value);
+        return game.settings.set(MODULE_ID, settingKey, value);
       })
     );
   }

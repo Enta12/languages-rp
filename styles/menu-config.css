@@ -41,7 +41,7 @@
   width: 40px;
   height: 20px;
   background: transparent;
-  border: 1px dotted var(--dnd5e-color-gold);
+  border: 1px dotted green;
   border-radius: 20px;
   transition: background 0.3s ease;
 }
@@ -51,7 +51,7 @@
   position: absolute;
   width: 16px;
   height: 16px;
-  background: var(--dnd5e-color-gold);
+  background: green;
   border-radius: 50%;
   top: 1px;
   left: 2px;
@@ -59,7 +59,7 @@
 }
 
 #dnd-menu-config input[type="checkbox"]:checked+.toggle-indicator {
-  background: var(--dnd5e-color-gold);
+  background: green;
 }
 
 #dnd-menu-config input[type="checkbox"]:checked+.toggle-indicator::before {
@@ -73,7 +73,7 @@
   height: 1px;
   background: linear-gradient(to right,
       transparent,
-      var(--dnd5e-color-gold),
+      green,
       transparent);
 }
 
@@ -94,12 +94,12 @@
 }
 
 #dnd-menu-config hr.ampersand::before {
-  background: linear-gradient(to left, var(--dnd5e-color-gold), transparent);
+  background: linear-gradient(to left, green, transparent);
   inset-inline-end: calc(50% + 14px);
 }
 
 #dnd-menu-config hr.ampersand::after {
-  background: linear-gradient(to right, var(--dnd5e-color-gold), transparent);
+  background: linear-gradient(to right, green, transparent);
   inset-inline-start: calc(50% + 14px);
 }
 

@@ -1,5 +1,6 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
-const { BooleanField } = foundry.data.fields;
+const { BooleanField, StringField } = foundry.data.fields;
+import { STATIC_CONFIG } from "../static-config.js";
 
 export default class HealFormulaDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @inheritdoc */
@@ -103,7 +104,7 @@ export default class HealFormulaDialog extends HandlebarsApplicationMixin(Applic
       value: this.#model.extended,
     };
 
-    context.healingTypes = CONFIG.DND5E.healingTypes;
+    context.healingTypes = STATIC_CONFIG.healingTypes;
 
     context.buttons = [{
       type: "submit",
@@ -166,11 +167,9 @@ class HealFormulaModel extends foundry.abstract.DataModel {
         initial: "2d4",
         label: "DND.DIALOG.FORMULA",
       }),
-      healType: new foundry.data.fields.StringField({
+      healType: new StringField({
         required: true,
-        initial: "healing",
-        choices: Object.keys(CONFIG.DND5E.healingTypes),
-        label: "DND.DIALOG.TYPE",
+        choices: Object.keys(STATIC_CONFIG.healingTypes),
       }),
       average: new BooleanField({
         label: "DND.DIALOG.AVERAGE",

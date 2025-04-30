@@ -1,5 +1,6 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 const { StringField, BooleanField } = foundry.data.fields;
+import { STATIC_CONFIG } from "../static-config.js";
 
 /**
  * @typedef {object} ConditionConfig
@@ -83,13 +84,11 @@ export default class ConditionFormulaDialog extends HandlebarsApplicationMixin(A
   async _prepareContext(options) {
     const context = {};
 
-    const conditionChoices = Object.entries(CONFIG.DND5E.conditionTypes ?? {})
-      .filter(([key, data]) => data?.reference)
-      .reduce((acc, [key, data]) => {
-        acc[key] = game.i18n.localize(data.label ?? key);
+    const conditionChoices = Object.entries(STATIC_CONFIG.conditionTypes ?? {})
+      .reduce((acc, [id, info]) => {
+        acc[id] = info.label;
         return acc;
       }, {});
-
 
     context.condition = {
       field: this.#model.schema.getField("condition"),
@@ -185,7 +184,7 @@ export default class ConditionFormulaDialog extends HandlebarsApplicationMixin(A
 class ConditionFormulaModel extends foundry.abstract.DataModel {
   /** @inheritdoc */
   static defineSchema() {
-    const conditionIds = Object.entries(CONFIG.DND5E.conditionTypes ?? {})
+    const conditionIds = Object.entries(STATIC_CONFIG.conditionTypes ?? {})
       .filter(([key, data]) => data?.reference)
       .map(([key, _]) => key);
 
@@ -197,7 +196,12 @@ class ConditionFormulaModel extends foundry.abstract.DataModel {
         blank: false,
         initial: initialCondition,
         choices: conditionIds,
-        label: "DND.CONDITIONTYPES.TITLE"
+        label: "DND.CONDITIONTYPES.TITLE",
+        validate: value => {
+          const conditionIds = Object.entries(STATIC_CONFIG.conditionTypes ?? {})
+            .map(([id]) => id);
+          return conditionIds.includes(value);
+        }
       }),
       apply: new BooleanField({
         required: true,

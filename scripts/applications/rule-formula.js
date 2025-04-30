@@ -1,5 +1,6 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
 const { StringField } = foundry.data.fields;
+import { STATIC_CONFIG } from "../static-config.js";
 
 /**
  * @typedef {object} RuleConfig
@@ -74,7 +75,7 @@ export default class RuleFormulaDialog extends HandlebarsApplicationMixin(Applic
   async _prepareContext(options) {
     const context = {};
 
-    const rulesConfig = CONFIG.DND5E.rules || {};
+    const rulesConfig = STATIC_CONFIG.rules || {};
 
     const rules = Object.keys(rulesConfig).map(key => ({
       value: key,
@@ -146,7 +147,7 @@ export default class RuleFormulaDialog extends HandlebarsApplicationMixin(Applic
 class RuleFormulaModel extends foundry.abstract.DataModel {
   /** @inheritdoc */
   static defineSchema() {
-    const rules = CONFIG.DND5E.rules || {};
+    const rules = STATIC_CONFIG.rules || {};
     const ruleKeys = Object.keys(rules);
     const initialRule = ruleKeys.length > 0 ? ruleKeys[0] : null;
 

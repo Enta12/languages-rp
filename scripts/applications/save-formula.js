@@ -1,4 +1,5 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
+import { STATIC_CONFIG } from "../static-config.js";
 
 export default class SaveFormulaDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @inheritdoc */
@@ -112,7 +113,7 @@ export default class SaveFormulaDialog extends HandlebarsApplicationMixin(Applic
       value: this.#model.useConcentration,
     };
 
-    context.abilities = CONFIG.DND5E.abilities;
+    context.abilities = STATIC_CONFIG.abilities;
 
     context.buttons = [{
       type: "submit",
@@ -152,7 +153,7 @@ export default class SaveFormulaDialog extends HandlebarsApplicationMixin(Applic
    */
   static #addSave(event, target) {
     const saves = this.#model.toObject().saves;
-    const defaultAbility = Object.keys(CONFIG.DND5E.abilities)[0] || "";
+    const defaultAbility = Object.keys(STATIC_CONFIG.abilities)[0] || "";
     saves.push({ ability: defaultAbility });
     this.#model.updateSource({ saves });
     this.render({ parts: ["saves"] });
@@ -222,11 +223,11 @@ class SaveFormulaModel extends foundry.abstract.DataModel {
       saves: new foundry.data.fields.ArrayField(new foundry.data.fields.SchemaField({
         ability: new foundry.data.fields.StringField({
           required: true,
-          choices: () => CONFIG.DND5E.abilities
+          choices: () => STATIC_CONFIG.abilities
         }),
       }), {
         initial: () => {
-          const defaultAbility = Object.keys(CONFIG.DND5E.abilities)[0] || "";
+          const defaultAbility = Object.keys(STATIC_CONFIG.abilities)[0] || "";
           return [{ ability: defaultAbility }];
         }
       })

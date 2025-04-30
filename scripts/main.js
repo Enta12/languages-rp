@@ -8,6 +8,7 @@ import HealFormulaDialog from "./applications/heal-formula.js";
 import LookupFormulaDialog from "./applications/lookup-formula.js";
 import RuleFormulaDialog from "./applications/rule-formula.js";
 import ConditionFormulaDialog from "./applications/condition-formula.js";
+import { STATIC_CONFIG } from "./static-config.js";
 
 // Configuration des menus - structure harmonisée
 const MENU_CONFIGS = {
@@ -100,6 +101,8 @@ const STYLE_BLOCKS = {
   notable: { class: 'notable', type: 'aside' }
 };
 
+const MODULE_ID = "languages-rp-fork";
+
 //region Hook
 // Hook principal qui s'exécute lors de l'initialisation des menus ProseMirror
 Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
@@ -176,9 +179,9 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
   const createMenuEntries = (category, config) => {
     // Cas spécial pour les jets de sauvegarde
     if (category === 'saves') {
-      return Object.keys(CONFIG.DND5E[config.source] || {})
+      return Object.keys(STATIC_CONFIG[config.source] || {})
         .map(item => ({
-          title: CONFIG.DND5E[config.source][item]?.label || item,
+          title: STATIC_CONFIG[config.source][item]?.label || item,
           action: item,
           cmd: () => insertions.save(item)
         }));
@@ -187,13 +190,13 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
     // Cas spécial pour les tests de caractéristiques et compétences
     if (category === 'checks') {
       return [
-        ...Object.keys(CONFIG.DND5E[config.source.abilities] || {}).map(ability => ({
-          title: CONFIG.DND5E[config.source.abilities][ability]?.label || ability,
+        ...Object.keys(STATIC_CONFIG[config.source.abilities] || {}).map(ability => ({
+          title: STATIC_CONFIG[config.source.abilities][ability]?.label || ability,
           action: ability,
           cmd: () => insertions.check(ability)
         })),
-        ...Object.keys(CONFIG.DND5E[config.source.skills] || {}).map(skill => ({
-          title: CONFIG.DND5E[config.source.skills][skill]?.label || skill,
+        ...Object.keys(STATIC_CONFIG[config.source.skills] || {}).map(skill => ({
+          title: STATIC_CONFIG[config.source.skills][skill]?.label || skill,
           action: skill,
           cmd: () => insertions.check(skill)
         }))
@@ -202,9 +205,9 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
 
     // Cas pour les dégâts
     if (category === 'damage') {
-      return Object.keys(CONFIG.DND5E[config.source] || {})
+      return Object.keys(STATIC_CONFIG[config.source] || {})
         .map(item => ({
-          title: CONFIG.DND5E[config.source][item]?.label || item,
+          title: STATIC_CONFIG[config.source][item]?.label || item,
           action: item,
           cmd: () => insertions.damage(item)
         }));
@@ -212,19 +215,19 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
 
     // Cas pour les soins
     if (category === 'heal') {
-      return Object.keys(CONFIG.DND5E[config.source] || {})
+      return Object.keys(STATIC_CONFIG[config.source] || {})
         .map(item => ({
-          title: CONFIG.DND5E[config.source][item]?.label || item,
+          title: STATIC_CONFIG[config.source][item]?.label || item,
           action: item,
           cmd: () => insertions.heal(item)
         }));
     }
 
     // Cas standard pour les références
-    return Object.keys(CONFIG.DND5E[config.source] || {})
-      .filter(item => !config.reference || CONFIG.DND5E[config.source][item]?.reference)
+    return Object.keys(STATIC_CONFIG[config.source] || {})
+      .filter(item => !config.reference || STATIC_CONFIG[config.source][item]?.reference)
       .map(item => ({
-        title: CONFIG.DND5E[config.source][item]?.label || item,
+        title: STATIC_CONFIG[config.source][item]?.label || item,
         action: item,
         cmd: () => insertions.reference(item, category)
       }));
@@ -282,7 +285,7 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
 
   // Filtre les menus activés en fonction des paramètres utilisateur
   const enabledMenus = Object.entries(MENU_CONFIGS)
-    .filter(([key]) => game.settings.get('dnd-easy-reference', `show${key}`));
+    .filter(([key]) => game.settings.get(MODULE_ID, `show${key}`));
 
   //region Menu final
   dropdowns.dndeasyreference = {

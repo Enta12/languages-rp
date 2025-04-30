@@ -1,23 +1,16 @@
 {
-    "id": "dnd-easy-reference",
-    "title": "D&D - Easy Reference",
-    "description": "Simple solution: add a menu in ProseMirror to get the system references directly in the journal.",
-    "version": "0.0.0.1",
+    "id": "languages-rp-fork",
+    "title": "languages-rp-fork",
+    "description": "Add languages to character and let them decrypt texts",
+    "version": "0.0.1.2",
     "compatibility": {
         "minimum": "12",
         "verified": "13"
     },
     "authors": [
         {
-            "name": "Padhiver",
-            "discord": "Padhiver"
-        }
-    ],
-    "media": [
-        {
-            "type": "setup",
-            "url": "systems/dnd5e/ui/official/dnd5e-repo.jpg",
-            "thumbnail": "systems/dnd5e/ui/official/dnd5e-thumbnail.jpg"
+            "name": "Enta12",
+            "discord": "Enta12"
         }
     ],
     "languages": [
@@ -65,22 +58,6 @@
     "styles": [
         "./styles/menu-config.css"
     ],
-    "manifest": "https://github.com/Padhiver/dnd-easy-reference/releases/latest/download/module.json",
-    "download": "This is auto replaced",
-    "url": "This is auto replaced",
-    "relationships": {
-        "systems": [
-            {
-                "id": "dnd5e",
-                "type": "system",
-                "compatibility": {
-                    "minimum": "4.0",
-                    "verified": "4.0",
-                    "maximum": "5.2"
-                }
-            }
-        ]
-    },
     "flags": {
         "hotReload": {
             "extensions": [

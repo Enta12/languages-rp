@@ -1,4 +1,5 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
+import { STATIC_CONFIG, dnd5eUtilities } from "../static-config.js";
 
 export default class CheckFormulaDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @inheritdoc */
@@ -119,12 +120,12 @@ export default class CheckFormulaDialog extends HandlebarsApplicationMixin(Appli
       value: this.#model.passive,
     };
 
-    context.abilities = CONFIG.DND5E.abilities;
-    context.skills = CONFIG.DND5E.skills;
+    context.abilities = STATIC_CONFIG.abilities;
+    context.skills = STATIC_CONFIG.skills;
 
-    let toolChoices = await dnd5e.documents.Trait.choices("tool");
-    const tools = toolChoices.asSet().reduce((acc, k) => {
-      acc[k] = dnd5e.documents.Trait.keyLabel(`tool:${k}`);
+    let toolChoices = await dnd5eUtilities.documents.Trait.choices("tool");
+    const tools = Object.entries(toolChoices).reduce((acc, [k, v]) => {
+      acc[k] = dnd5eUtilities.documents.Trait.keyLabel(`tool:${k}`);
       return acc;
     }, {});
 
@@ -237,7 +238,7 @@ class CheckFormulaModel extends foundry.abstract.DataModel {
         type: new foundry.data.fields.StringField({ required: true }),
       }), {
         initial: () => {
-          const defaultType = Object.keys(CONFIG.DND5E.abilities)[0] || "";
+          const defaultType = Object.keys(STATIC_CONFIG.abilities)[0] || "";
           return [{ type: defaultType }];
         }
       })

@@ -1,4 +1,5 @@
 const { HandlebarsApplicationMixin, ApplicationV2 } = foundry.applications.api;
+import { STATIC_CONFIG } from "../static-config.js";
 
 export default class LookupFormulaDialog extends HandlebarsApplicationMixin(ApplicationV2) {
   /** @inheritdoc */
@@ -89,24 +90,7 @@ export default class LookupFormulaDialog extends HandlebarsApplicationMixin(Appl
       value: this.#model.attributePath,
     };
 
-    context.trackableOptions = this._prepareTrackableOptions();
-
-    context.buttons = [{
-      type: "submit",
-      icon: "fa-solid fa-check",
-      label: "Confirm",
-    }];
-
-    return context;
-  }
-
-  /**
-   * Prépare les options pour le menu déroulant des attributs traçables.
-   * @returns {Array}
-   */
-  _prepareTrackableOptions() {
-    const options = [];
-    const trackable = CONFIG.DND5E.trackableAttributes;
+    const trackable = STATIC_CONFIG.trackableAttributes;
 
     const processObject = (obj, path = "") => {
       if (obj && typeof obj === "object" && !Array.isArray(obj)) {
@@ -139,7 +123,15 @@ export default class LookupFormulaDialog extends HandlebarsApplicationMixin(Appl
       }
     }
 
-    return options;
+    context.trackableOptions = options;
+
+    context.buttons = [{
+      type: "submit",
+      icon: "fa-solid fa-check",
+      label: "Confirm",
+    }];
+
+    return context;
   }
 
   /**
