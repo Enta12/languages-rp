@@ -1,0 +1,26 @@
+<form class="languages-rp-form">
+    <div class="languages-list">
+        {{#each languages}}
+        <div class="language-item">
+            <select class="language-name">
+                <option value="">Sélectionnez une langue</option>
+                {{#each ../availableLanguages}}
+                <option value="{{this}}" {{#if (eq ../name this)}}selected{{/if}}>{{this}}</option>
+                {{/each}}
+            </select>
+            <select class="language-level">
+                <option value="débutant" {{#if (eq level "débutant")}}selected{{/if}}>Débutant</option>
+                <option value="intermédiaire" {{#if (eq level "intermédiaire")}}selected{{/if}}>Intermédiaire</option>
+                <option value="avancé" {{#if (eq level "avancé")}}selected{{/if}}>Avancé</option>
+                <option value="maîtrise" {{#if (eq level "maîtrise")}}selected{{/if}}>Maîtrise</option>
+            </select>
+            <button type="button" class="remove-language"><i class="fas fa-trash"></i></button>
+        </div>
+        {{/each}}
+    </div>
+    {{#if availableUnselectedLanguages.length}}
+    <button type="button" class="add-language"><i class="fas fa-plus"></i> Ajouter une langue</button>
+    {{else}}
+    <p class="notes">Toutes les langues disponibles ont déjà été attribuées à cet acteur.</p>
+    {{/if}}
+</form> 
