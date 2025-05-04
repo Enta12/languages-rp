@@ -135,17 +135,17 @@ Hooks.once("init", () => {
     }
   });
 
-  // Enregistrement des paramètres pour chaque catégorie de menu
-  MENU_CATEGORIES.forEach((category) => {
+  // Enregistrer les paramètres pour chaque catégorie de menu
+  for (const category of MENU_CATEGORIES) {
     game.settings.register(MODULE_ID, `show${category}`, {
       name: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.TITLE`),
-      hint: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.HINT`),
+      hint: game.i18n.localize("DND.MENU.DESCRIPTION"),
       scope: "world",
       config: false,
       type: Boolean,
-      default: true,
+      default: true, // Activer par défaut
     });
-  });
+  }
 });
 
 class DnDMenuConfigV2 extends HandlebarsApplicationMixin(ApplicationV2) {

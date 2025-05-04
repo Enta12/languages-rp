@@ -172,6 +172,12 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
       const text = await LookupFormulaDialog.create();
       if (text) insertText(text);
     },
+    
+    // Dialogue pour les langues
+    language: async (language) => {
+      const text = `&Languages[${language}]`;
+      insertText(text);
+    },
   };
 
 
@@ -221,6 +227,16 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
           action: item,
           cmd: () => insertions.heal(item)
         }));
+    }
+
+    // Cas pour les langues
+    if (category === 'languages') {
+      const availableLanguages = game.settings.get(MODULE_ID, 'availableLanguages') || [];
+      return availableLanguages.map(language => ({
+        title: language,
+        action: language,
+        cmd: () => insertions.language(language)
+      }));
     }
 
     // Cas standard pour les références
@@ -290,34 +306,14 @@ Hooks.on("getProseMirrorMenuDropDowns", (proseMirrorMenu, dropdowns) => {
   //region Menu final
   dropdowns.dndeasyreference = {
     action: 'reference',
-    title: '<i class="fa-solid fa-books"></i>', // Icône FontAwesome
+    title: '<i class="fa-solid fa-language"></i>', // Icône changée pour une icône de langue
     entries: [
-      // Entrées de menu pour les dialogues
-      ...enabledMenus
-        .filter(([_, config]) => config.dialogHandler)
-        .map(([key, config]) => ({
-          title: game.i18n.localize(`DND.MENU.${key.toUpperCase()}.TITLE`),
-          action: `${key}-dialog`,
-          cmd: () => insertions[config.dialogHandler]()
-        })),
-
-      // Entrées de menu pour les catégories avec sous-menus
-      ...enabledMenus
-        .filter(([_, config]) => !config.dialogHandler && config.source)
-        .map(([key, config]) => ({
-          title: game.i18n.localize(`DND.MENU.${key.toUpperCase()}.TITLE`),
-          action: key,
-          children: createMenuEntries(key, config)
-        })),
-
-      // Menu des styles
-      {
-        title: game.i18n.localize('DND.MENU.STYLE.TITLE'),
-        action: 'styles',
-        children: Object.entries(STYLE_BLOCKS).map(([type, config]) =>
-          createStyleEntry(type, config)
-        )
-      }
+      // Ajout des langues directement dans le menu principal (uniquement)
+      ...(game.settings.get(MODULE_ID, 'availableLanguages') || []).map(language => ({
+        title: language,
+        action: `language-${language}`,
+        cmd: () => insertions.language(language)
+      }))
     ]
   };
 });
