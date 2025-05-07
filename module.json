@@ -29,11 +29,7 @@
         }
     ],
     "esmodules": [
-        "./scripts/main.js",
-        "./scripts/settings.js"
-    ],
-    "styles": [
-        "./styles/menu-config.css"
+        "./scripts/main.js"
     ],
     "url": "https://github.com/Enta12/languages-rp",
     "manifest": "https://github.com/Enta12/languages-rp/releases/latest/download/module.json",
