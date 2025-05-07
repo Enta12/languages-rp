@@ -15,7 +15,7 @@ function addLanguageHeaders(html) {
     const custom = actor.system.traits.languages.custom || "";
     languages.forEach((lang) => {
       const langName = CONFIG.DND5E.languages[lang] || lang;
-      knownLanguages[langName.toLowerCase()] = { level: "natif" };
+      knownLanguages[langName.toLowerCase()] = { level: game.i18n.localize("languages-rp-fork.proficiencyLevels.native") };
     });
     custom.split(";").forEach((lang) => {
       const trimmed = lang.trim();
@@ -26,7 +26,7 @@ function addLanguageHeaders(html) {
           const level = match[2].trim().toLowerCase();
           knownLanguages[langName.toLowerCase()] = { level };
         } else {
-          knownLanguages[trimmed.toLowerCase()] = { level: "natif" };
+          knownLanguages[trimmed.toLowerCase()] = { level: game.i18n.localize("languages-rp-fork.proficiencyLevels.native") };
         }
       }
     });
@@ -40,7 +40,7 @@ function addLanguageHeaders(html) {
     if (element.data("header-added")) return;
     element.data("header-added", true);
     element.wrap('<div class="language-block-container"></div>');
-    let proficiencyLevel = "Aucun";
+    let proficiencyLevel = game.i18n.localize("languages-rp-fork.ui.noLevel");
     let headerColor = "#777777";
     if (language && knownLanguages[language.toLowerCase()]) {
       proficiencyLevel = knownLanguages[language.toLowerCase()].level;
@@ -114,10 +114,10 @@ Hooks.once("init", () => {
     const proficiencyLevels =
       game.settings.get(MODULE_ID, "proficiencyLevels") || {};
     const defaultLevels = {
-      débutant: { value: 0.15, color: "#d9c060" },
-      moyen: { value: 0.35, color: "#bcc060" },
-      fort: { value: 0.6, color: "#9cc060" },
-      natif: { value: 1.0, color: "#60c070" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.beginner")]: { value: 0.15, color: "#d9c060" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.intermediate")]: { value: 0.35, color: "#bcc060" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.advanced")]: { value: 0.6, color: "#9cc060" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.native")]: { value: 1.0, color: "#60c070" },
     };
     let needsUpdate = false;
     Object.entries(proficiencyLevels).forEach(([name, data]) => {
@@ -142,10 +142,10 @@ Hooks.once("init", () => {
       MODULE_ID,
       "proficiencyLevels"
     ) || {
-      débutant: { value: 0.15, color: "#d9c060" },
-      moyen: { value: 0.35, color: "#bcc060" },
-      fort: { value: 0.6, color: "#9cc060" },
-      natif: { value: 1.0, color: "#60c070" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.beginner")]: { value: 0.15, color: "#d9c060" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.intermediate")]: { value: 0.35, color: "#bcc060" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.advanced")]: { value: 0.6, color: "#9cc060" },
+      [game.i18n.localize("languages-rp-fork.proficiencyLevels.native")]: { value: 1.0, color: "#60c070" },
     };
     const sortedLevels = Object.entries(proficiencyLevels).sort(
       ([, a], [, b]) => {

@@ -6,8 +6,6 @@ const LANGUAGE_FONT = {
       game.settings.get(MODULE_ID, "availableLanguages") || {};
     const langData = languagesData[language];
     if (langData && langData.font) {
-      console.log("langData", langData);
-      console.log("langData", langData.font.split("/").pop().split(".")[0]);
       return langData.font.split("/").pop().split(".")[0];
     }
     return null;

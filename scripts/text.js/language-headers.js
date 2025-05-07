@@ -91,7 +91,6 @@ const MODULE_ID = "languages-rp-fork";
 
 function getLanguagesFromActorData(actor) {
   const actorLangs = {};
-  console.log(`[LANGUAGES RP FORK] Tentative de lecture des flags pour l'acteur: ${actor ? actor.name : 'Non défini'}`);
   if (actor && actor.flags && actor.flags[MODULE_ID] && Array.isArray(actor.flags[MODULE_ID].languages)) {
     actor.flags[MODULE_ID].languages.forEach(lang => {
       if (lang && typeof lang.name === 'string' && typeof lang.level === 'string') {

@@ -1,5 +1,5 @@
 <form class="languages-rp-config-form">
-    <p class="notes">Ajoutez les langues disponibles pour vos joueurs. Ces langues seront sélectionnables lors de la configuration des personnages.</p>
+    <p class="notes">{{localize "languages-rp-fork.ui.languageConfiguration"}}</p>
     
     <style>
         .language-config-item {
@@ -52,24 +52,24 @@
     <div class="languages-config-list">
         {{#each languages}}
         <div class="language-config-item">
-            <input type="text" class="language-name" value="{{this.name}}" placeholder="Nom de la langue">
+            <input type="text" class="language-name" value="{{this.name}}" placeholder="{{localize 'languages-rp-fork.ui.languageName'}}">
             <div class="key-wrapper">
-                <input type="text" class="language-key" value="{{this.key}}" placeholder="Clé de chiffrement (40 caractères)">
+                <input type="text" class="language-key" value="{{this.key}}" placeholder="{{localize 'languages-rp-fork.ui.encryptionKey'}}">
             </div>
             <button type="button" class="remove-language-config"><i class="fas fa-trash"></i></button>
             <div class="font-picker-container">
-                <label for="font-{{@index}}">Police:</label>
-                <button type="button" class="file-picker font-picker" data-type="data" data-target="font-{{@index}}" title="Parcourir les fichiers"><i class="fas fa-file-import fa-fw"></i></button>
-                <input type="text" class="language-font" id="font-{{@index}}" value="{{this.font}}" placeholder="Chemin vers le fichier de police" data-dontsubmit>
-                <span class="font-preview">{{#if this.font}}Aperçu{{else}}Aucune police sélectionnée{{/if}}</span>
+                <label for="font-{{@index}}">{{localize "languages-rp-fork.ui.font"}}:</label>
+                <button type="button" class="file-picker font-picker" data-type="data" data-target="font-{{@index}}" title="{{localize 'languages-rp-fork.ui.browseFiles'}}"><i class="fas fa-file-import fa-fw"></i></button>
+                <input type="text" class="language-font" id="font-{{@index}}" value="{{this.font}}" placeholder="{{localize 'languages-rp-fork.ui.fontPath'}}" data-dontsubmit>
+                <span class="font-preview">{{#if this.font}}{{localize "languages-rp-fork.ui.preview"}}{{else}}{{localize "languages-rp-fork.ui.noFontSelected"}}{{/if}}</span>
             </div>
         </div>
         {{/each}}
     </div>
     
-    <button type="button" class="add-language-config"><i class="fas fa-plus"></i> Ajouter une langue</button>
+    <button type="button" class="add-language-config"><i class="fas fa-plus"></i> {{localize "languages-rp-fork.ui.addLanguage"}}</button>
     
     <div class="form-group">
-        <button type="submit" class="submit-languages-config"><i class="fas fa-save"></i> Sauvegarder</button>
+        <button type="submit" class="submit-languages-config"><i class="fas fa-save"></i> {{localize "languages-rp-fork.ui.save"}}</button>
     </div>
 </form> 

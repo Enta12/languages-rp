@@ -1,116 +1,54 @@
 {
-  "DND": {
-    "DIALOG": {
-      "APPLY": "Appliquer",
-      "ATTRIBUTES": "Attributs",
-      "AVERAGE": "Moyenne",
-      "CANCEL": "Annuler",
-      "COMBINATION": "Ajouter une combinaison",
-      "CONCENTRATION": "Concentration",
-      "CONFIRM": "Confirmer",
-      "DAMAGE_ADD": "Ajouter une séction de dégâts",
-      "DAMAGE_PARTS": "Séction de dégâts",
-      "DAMAGE_TYPES": "Type de dégâts",
-      "DC": "Difficulté",
-      "DELETE": "Supprimer",
-      "EXTENDED": "Étendue",
-      "FORMULA": "Formule",
-      "NAME_FORMAT": {
-        "CAPITALIZE": "Majuscules",
-        "LABEL": "Format du nom",
-        "LOWERCASE": "minuscules",
-        "UPPERCASE": "MAJUSCULES"
-      },
-      "NAME_OPTIONS": "Options de nom",
-      "PASSIVE": "Passif",
-      "PLACEHOLDER": "",
-      "RULES_SEARCH": "Règle",
-      "SELECT_ATTRIBUTE": "Choix d'attribut",
-      "TYPES": "Types",
-      "USE_NAME": "Nom de l'acteur"
+  "languages-rp-fork": {
+    "ui": {
+      "languageConfiguration": "Configuration des Langues",
+      "proficiencyLevelsConfiguration": "Configuration des Niveaux de Maîtrise",
+      "addLanguage": "Ajouter une langue",
+      "removeLanguage": "Supprimer",
+      "languageName": "Nom de la langue",
+      "encryptionKey": "Clé de chiffrement",
+      "font": "Police",
+      "preview": "Aperçu",
+      "proficiencyLevel": "Niveau de maîtrise",
+      "noLevel": "Aucun",
+      "save": "Sauvegarder",
+      "cancel": "Annuler",
+      "resetDefaults": "Réinitialiser aux valeurs par défaut",
+      "loadingError": "Erreur de chargement",
+      "invalidFont": "Police invalide",
+      "noFontSelected": "Aucune police sélectionnée",
+      "browseFiles": "Parcourir les fichiers",
+      "fontPath": "Chemin vers le fichier de police",
+      "levelColor": "Couleur du niveau",
+      "note": "Note",
+      "levelsSortNote": "Les niveaux sont triés par valeur croissante au moment de l'enregistrement.",
+      "nativeLevelNote": "Le niveau avec la valeur 1.0 représente une compréhension totale (niveau natif)."
     },
-    "MENU": {
-      "ABILITIES": {
-        "TITLE": "Caractéristiques"
-      },
-      "AREATARGETTYPES": {
-        "TITLE": "Types de zones"
-      },
-      "ATTACK": {
-        "TITLE": "Formule d'attaque"
-      },
-      "CHECKS": {
-        "TITLE": "Jets d'opposition"
-      },
-      "CONDITIONTYPES": {
-        "TITLE": "États"
-      },
-      "CREATURETYPES": {
-        "TITLE": "Types de créatures"
-      },
-      "DAMAGE": {
-        "TITLE": "Formule de dégâts"
-      },
-      "DAMAGETYPES": {
-        "TITLE": "Types de dégâts"
-      },
-      "DESCRIPTION": "Sélectionnez les menus à afficher dans ProseMirror.",
-      "DIALOG": "Configurer l'enrichisseur",
-      "HEAL": {
-        "TITLE": "Formule de soins"
-      },
-      "ITEMPROPERTIES": {
-        "TITLE": "Propriétés des sorts"
-      },
-      "LOOKUP": {
-        "TITLE": "Lookup"
-      },
-      "RULES": {
-        "TITLE": "Règles"
-      },
-      "SAVES": {
-        "TITLE": "Jets de sauvegarde"
-      },
-      "SKILLS": {
-        "TITLE": "Compétences"
-      },
-      "STYLE": {
-        "ADVICE": "Conseil",
-        "ADVICE_CONTENT": "Ceci est un bloc de conseil.",
-        "ADVICE_TITLE": "Conseil",
-        "NARRATIVE": "Narratif",
-        "NOTABLE": "Remarquable",
-        "QUEST": "Quête",
-        "QUEST_CONTENT": "Ceci est un bloc de quête.",
-        "QUEST_TITLE": "Quête",
-        "TITLE": "Styles",
-        "TREASURE": "Trésor",
-        "TREASURE_CONTENT": "Ceci est un bloc de trésor.",
-        "TREASURE_TITLE": "Trésor"
-      },
-      "TITLE": "D&D - Easy Reference",
-      "TOOLS": {
-        "TITLE": "Outils"
-      },
-      "WEAPONMASTERIES": {
-        "TITLE": "Bottes d'armes"
-      }
+    "proficiencyLevels": {
+      "beginner": "débutant",
+      "intermediate": "moyen",
+      "advanced": "fort",
+      "native": "natif"
     },
-    "SETTINGS": {
-      "FORMAT": {
-        "LONG": "Format long",
-        "SHORT": "Format court",
-        "TITLE": "Format"
+    "messages": {
+      "clickToDecrypt": "Cliquez pour déchiffrer",
+      "languageNotKnown": "Vous ne connaissez pas cette langue"
+    },
+    "settings": {
+      "languages": {
+        "name": "Langues disponibles",
+        "label": "Configurer",
+        "hint": "Configurez les langues disponibles pour vos joueurs"
       },
-      "MENU": {
-        "HINT": "Configurer les enrichisseurs qui apparaissent dans le menu D&D",
-        "LABEL": "Configurer les enrichisseurs",
-        "TITLE": "Configuration du menu"
-      },
-      "PROSEGAP": {
-        "HINT": "Réduit l'écart de ProseMirror pour éviter que l'ajout du menu D&D ne force à passer sur deux lignes.",
-        "TITLE": "Réduction de l'écart ProseMirror"
+      "proficiencyLevels": {
+        "name": "Niveaux de maîtrise linguistique",
+        "label": "Configurer",
+        "hint": "Configurez les niveaux de maîtrise et leurs pourcentages",
+        "reset": {
+          "title": "Réinitialiser les niveaux de maîtrise",
+          "content": "Êtes-vous sûr de vouloir réinitialiser tous les niveaux de maîtrise à leurs valeurs par défaut ? Cette action est irréversible."
+        }
       }
     }
   }
-}
+} 

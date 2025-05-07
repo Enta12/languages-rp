@@ -1,13 +1,13 @@
 <form>
   <div class="proficiency-levels-form">
     <header class="form-header">
-      <h2><i class="fas fa-language"></i> Configuration des niveaux de compétence linguistique</h2>
-      <p class="notes">Configurez les différents niveaux de compétence et leurs pourcentages de compréhension.</p>
+      <h2><i class="fas fa-language"></i> {{localize "languages-rp-fork.ui.proficiencyLevelsConfiguration"}}</h2>
+      <p class="notes">{{localize "languages-rp-fork.settings.proficiencyLevels.hint"}}</p>
     </header>
     
     <div class="form-group proficiency-controls">
-      <button type="button" class="add-level"><i class="fas fa-plus"></i> Ajouter un niveau</button>
-      <button type="button" class="reset-defaults"><i class="fas fa-undo"></i> Réinitialiser par défaut</button>
+      <button type="button" class="add-level"><i class="fas fa-plus"></i> {{localize "languages-rp-fork.ui.addLanguage"}}</button>
+      <button type="button" class="reset-defaults"><i class="fas fa-undo"></i> {{localize "languages-rp-fork.ui.resetDefaults"}}</button>
     </div>
     
     <div class="form-group">
@@ -15,14 +15,14 @@
         {{#each levels}}
         <div class="proficiency-level-item">
           <div class="level-name">
-            <input type="text" name="levels[{{@index}}][name]" value="{{this.name}}" placeholder="Nom du niveau" required>
+            <input type="text" name="levels[{{@index}}][name]" value="{{this.name}}" placeholder="{{localize 'languages-rp-fork.ui.proficiencyLevel'}}" required>
           </div>
           <div class="level-value">
             <input type="number" name="levels[{{@index}}][value]" value="{{this.value}}" placeholder="0.0" min="0" max="1" step="0.05" required>
             <span class="percentage">{{math this.value "*" 100}}%</span>
           </div>
           <div class="level-color">
-            <input type="color" name="levels[{{@index}}][color]" value="{{this.color}}" title="Couleur du niveau">
+            <input type="color" name="levels[{{@index}}][color]" value="{{this.color}}" title="{{localize 'languages-rp-fork.ui.levelColor'}}">
           </div>
           <div class="level-controls">
             <button type="button" class="remove-level"><i class="fas fa-trash"></i></button>
@@ -32,13 +32,13 @@
       </div>
       
       <p class="notes">
-        <strong>Note:</strong> Les niveaux sont triés par valeur croissante au moment de l'enregistrement.
-        Le niveau avec la valeur 1.0 représente une compréhension totale (niveau natif).
+        <strong>{{localize "languages-rp-fork.ui.note"}}:</strong> {{localize "languages-rp-fork.ui.levelsSortNote"}}
+        {{localize "languages-rp-fork.ui.nativeLevelNote"}}
       </p>
     </div>
     
     <footer class="form-footer">
-      <button type="submit" name="submit" class="submit-button"><i class="fas fa-save"></i> Enregistrer</button>
+      <button type="submit" name="submit" class="submit-button"><i class="fas fa-save"></i> {{localize "languages-rp-fork.ui.save"}}</button>
     </footer>
   </div>
 </form>

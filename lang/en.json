@@ -1,116 +1,54 @@
 {
-  "DND": {
-    "DIALOG": {
-      "APPLY": "Apply",
-      "ATTRIBUTES": "Attributes",
-      "AVERAGE": "Average",
-      "CANCEL": "Cancel",
-      "COMBINATION": "Combination",
-      "CONCENTRATION": "Concentration",
-      "CONFIRM": "Confirm",
-      "DAMAGE_ADD": "Add damage section",
-      "DAMAGE_PARTS": "Damage section",
-      "DAMAGE_TYPES": "Damage types",
-      "DC": "Difficulty",
-      "DELETE": "Delete",
-      "EXTENDED": "Extended",
-      "FORMULA": "Formula",
-      "NAME_FORMAT": {
-        "CAPITALIZE": "Capitalize",
-        "LABEL": "Name format",
-        "LOWERCASE": "lowercase",
-        "UPPERCASE": "UPPERCASE"
-      },
-      "NAME_OPTIONS": "Name options",
-      "PASSIVE": "Passive",
-      "PLACEHOLDER": "",
-      "RULES_SEARCH": "Rule",
-      "SELECT_ATTRIBUTE": "Select attribute",
-      "TYPES": "Types",
-      "USE_NAME": "Actor name"
+  "languages-rp-fork": {
+    "ui": {
+      "languageConfiguration": "Language Configuration",
+      "proficiencyLevelsConfiguration": "Proficiency Levels Configuration",
+      "addLanguage": "Add Language",
+      "removeLanguage": "Remove",
+      "languageName": "Language Name",
+      "encryptionKey": "Encryption Key",
+      "font": "Font",
+      "preview": "Preview",
+      "proficiencyLevel": "Proficiency Level",
+      "noLevel": "None",
+      "save": "Save",
+      "cancel": "Cancel",
+      "resetDefaults": "Reset to Defaults",
+      "loadingError": "Loading error",
+      "invalidFont": "Invalid font",
+      "noFontSelected": "No font selected",
+      "browseFiles": "Browse files",
+      "fontPath": "Font file path",
+      "levelColor": "Level color",
+      "note": "Note",
+      "levelsSortNote": "Levels are sorted by ascending value when saving.",
+      "nativeLevelNote": "The level with value 1.0 represents full comprehension (native level)."
     },
-    "MENU": {
-      "ABILITIES": {
-        "TITLE": "Abilities"
-      },
-      "AREATARGETTYPES": {
-        "TITLE": "Area Target Types"
-      },
-      "ATTACK": {
-        "TITLE": "Attack formula"
-      },
-      "CHECKS": {
-        "TITLE": "Checks"
-      },
-      "CONDITIONTYPES": {
-        "TITLE": "Conditions"
-      },
-      "CREATURETYPES": {
-        "TITLE": "Creature Types"
-      },
-      "DAMAGE": {
-        "TITLE": "Damage formula"
-      },
-      "DAMAGETYPES": {
-        "TITLE": "Damage Types"
-      },
-      "DESCRIPTION": "Select the menus to be displayed in ProseMirror.",
-      "DIALOG": "Configure enricher",
-      "HEAL": {
-        "TITLE": "Healing formula"
-      },
-      "ITEMPROPERTIES": {
-        "TITLE": "Spell Properties"
-      },
-      "LOOKUP": {
-        "TITLE": "Lookup"
-      },
-      "RULES": {
-        "TITLE": "Rules"
-      },
-      "SAVES": {
-        "TITLE": "Saving Throws"
-      },
-      "SKILLS": {
-        "TITLE": "Skills"
-      },
-      "STYLE": {
-        "ADVICE": "Advice",
-        "ADVICE_CONTENT": "This is an advice block.",
-        "ADVICE_TITLE": "Advice",
-        "NARRATIVE": "Narrative",
-        "NOTABLE": "Notable",
-        "QUEST": "Quest",
-        "QUEST_CONTENT": "This is a quest block.",
-        "QUEST_TITLE": "Quest",
-        "TITLE": "Styles",
-        "TREASURE": "Treasure",
-        "TREASURE_CONTENT": "This is a treasure block.",
-        "TREASURE_TITLE": "Treasure"
-      },
-      "TITLE": "D&D - Easy Reference",
-      "TOOLS": {
-        "TITLE": "Tools"
-      },
-      "WEAPONMASTERIES": {
-        "TITLE": "Weapon Masteries"
-      }
+    "proficiencyLevels": {
+      "beginner": "beginner",
+      "intermediate": "intermediate",
+      "advanced": "advanced",
+      "native": "native"
     },
-    "SETTINGS": {
-      "FORMAT": {
-        "LONG": "Long Format",
-        "SHORT": "Short Format",
-        "TITLE": "Format"
+    "messages": {
+      "clickToDecrypt": "Click to decrypt",
+      "languageNotKnown": "You don't know this language"
+    },
+    "settings": {
+      "languages": {
+        "name": "Available Languages",
+        "label": "Configure",
+        "hint": "Configure the languages available to your players"
       },
-      "MENU": {
-        "HINT": "Configure which items appear in the D&D menu",
-        "LABEL": "Configure Menu Items",
-        "TITLE": "Menu Configuration"
-      },
-      "PROSEGAP": {
-        "HINT": "Reduces the gap to prevent ProseMirror from breaking into two lines when adding D&D menu.",
-        "TITLE": "ProseMirror Gap Reduction"
+      "proficiencyLevels": {
+        "name": "Linguistic Proficiency Levels",
+        "label": "Configure",
+        "hint": "Configure linguistic proficiency levels and their percentages",
+        "reset": {
+          "title": "Reset Proficiency Levels",
+          "content": "Are you sure you want to reset all proficiency levels to their default values? This action is irreversible."
+        }
       }
     }
   }
-}
+} 

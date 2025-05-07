@@ -24,10 +24,8 @@ export async function onLanguagesButtonClick(_, app) {
     const availableLanguages = game.settings.get('languages-rp-fork', 'availableLanguages') || {};
     const actorLanguages = actor.getFlag('languages-rp-fork', 'languages') || [];
     
-    // Convertir l'objet availableLanguages en tableau de noms de langues
     const languageNames = Object.keys(availableLanguages);
     
-    // Filtrer les langues disponibles non attribuées
     const availableUnselectedLanguages = languageNames.filter(lang => 
         !actorLanguages.some(actorLang => actorLang.name === lang)
     );
@@ -64,7 +62,6 @@ function addLanguage(_, html) {
     const availableLanguages = game.settings.get('languages-rp-fork', 'availableLanguages') || {};
     const proficiencyLevels = game.settings.get('languages-rp-fork', 'proficiencyLevels') || {};
     
-    // Convertir l'objet availableLanguages en tableau de noms de langues
     const languageNames = Object.keys(availableLanguages);
     
     if (languageNames.length === 0) {
@@ -91,9 +88,7 @@ function addLanguage(_, html) {
         languageOptions += `<option value="${lang}">${lang}</option>`;
     });
 
-    // Créer les options de niveau de compétence à partir des paramètres
     let levelOptions = '';
-    // Convertir en tableau et trier par valeur de seuil
     const sortedLevels = Object.entries(proficiencyLevels)
         .sort(([, a], [, b]) => a.value - b.value);
     
