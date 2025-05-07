@@ -1,0 +1,15 @@
+<div class="proficiency-level-item">
+    <div class="level-name">
+        <input type="text" name="levels[{{index}}][name]" placeholder="Nom du niveau" required>
+    </div>
+    <div class="level-value">
+        <input type="number" name="levels[{{index}}][value]" placeholder="0.0" min="0" max="1" step="0.05" value="{{value}}" required>
+        <span class="percentage">{{percentage}}%</span>
+    </div>
+    <div class="level-color">
+        <input type="color" name="levels[{{index}}][color]" value="{{color}}" title="Couleur du niveau">
+    </div>
+    <div class="level-controls">
+        <button type="button" class="remove-level"><i class="fas fa-trash"></i></button>
+    </div>
+</div> 

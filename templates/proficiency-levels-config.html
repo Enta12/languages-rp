@@ -1,0 +1,133 @@
+<form>
+  <div class="proficiency-levels-form">
+    <header class="form-header">
+      <h2><i class="fas fa-language"></i> Configuration des niveaux de compétence linguistique</h2>
+      <p class="notes">Configurez les différents niveaux de compétence et leurs pourcentages de compréhension.</p>
+    </header>
+    
+    <div class="form-group proficiency-controls">
+      <button type="button" class="add-level"><i class="fas fa-plus"></i> Ajouter un niveau</button>
+      <button type="button" class="reset-defaults"><i class="fas fa-undo"></i> Réinitialiser par défaut</button>
+    </div>
+    
+    <div class="form-group">
+      <div class="proficiency-levels-list">
+        {{#each levels}}
+        <div class="proficiency-level-item">
+          <div class="level-name">
+            <input type="text" name="levels[{{@index}}][name]" value="{{this.name}}" placeholder="Nom du niveau" required>
+          </div>
+          <div class="level-value">
+            <input type="number" name="levels[{{@index}}][value]" value="{{this.value}}" placeholder="0.0" min="0" max="1" step="0.05" required>
+            <span class="percentage">{{math this.value "*" 100}}%</span>
+          </div>
+          <div class="level-color">
+            <input type="color" name="levels[{{@index}}][color]" value="{{this.color}}" title="Couleur du niveau">
+          </div>
+          <div class="level-controls">
+            <button type="button" class="remove-level"><i class="fas fa-trash"></i></button>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      
+      <p class="notes">
+        <strong>Note:</strong> Les niveaux sont triés par valeur croissante au moment de l'enregistrement.
+        Le niveau avec la valeur 1.0 représente une compréhension totale (niveau natif).
+      </p>
+    </div>
+    
+    <footer class="form-footer">
+      <button type="submit" name="submit" class="submit-button"><i class="fas fa-save"></i> Enregistrer</button>
+    </footer>
+  </div>
+</form>
+
+<style>
+  .proficiency-levels-form {
+    padding: 1em;
+  }
+  
+  .proficiency-controls {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1em;
+  }
+  
+  .proficiency-level-item {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 0.5em;
+    padding: 0.5em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.03);
+  }
+  
+  .level-name {
+    flex: 2;
+  }
+  
+  .level-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+  
+  .level-value input {
+    width: 70px;
+  }
+  
+  .level-color {
+    flex: 0;
+  }
+  
+  .level-color input {
+    width: 40px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  .percentage {
+    min-width: 3em;
+  }
+  
+  .level-controls {
+    flex: 0;
+  }
+  
+  .add-level {
+    margin-top: 0.5em;
+  }
+  
+  .form-footer {
+    margin-top: 1em;
+    text-align: right;
+  }
+  
+  .submit-button {
+    font-weight: bold;
+  }
+  
+  .preview-samples {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+  
+  .preview-label {
+    font-size: 0.9em;
+    font-weight: bold;
+  }
+  
+  .preview-box {
+    padding: 0.5em;
+    border-radius: 3px;
+    font-style: italic;
+  }
+</style> 

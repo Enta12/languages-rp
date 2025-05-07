@@ -1,0 +1,89 @@
+.language-tag-editor {
+  background-color: rgba(108, 138, 165, 0.1);
+  border-bottom: 2px dotted #6c8aa5;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-style: italic;
+  display: inline;
+  position: relative;
+}
+.language-tag-editor::before {
+  content: attr(data-language);
+  position: absolute;
+  top: -14px;
+  right: 0;
+  background-color: #6c8aa5;
+  color: white;
+  font-size: 10px;
+  padding: 1px 3px;
+  border-radius: 3px;
+  z-index: 10;
+}
+.language-text {
+  background-color: rgba(108, 138, 165, 0.1);
+  border-bottom: 1px dotted #6c8aa5;
+  border-radius: 3px;
+  padding: 0 4px;
+  font-style: italic;
+  display: inline;
+  position: relative;
+  cursor: pointer;
+}
+.contentRow {
+  background-color: rgba(0, 123, 255, 0.1);
+  padding: 8px;
+  border-radius: 4px;
+  margin: 4px 0;
+  border: 1px solid rgba(0, 123, 255, 0.2);
+}
+.language-text.decrypted {
+  background-color: rgba(120, 180, 120, 0.1);
+  border-bottom: 1px dotted #78b478;
+}
+.language-tooltip {
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  bottom: 100%;
+  left: 0;
+  display: none;
+  z-index: 1000;
+  white-space: nowrap;
+}
+.context-menu.language-proficiency-menu .context-item i.fas.fa-star {
+  color: gold;
+  text-shadow: 0 0 2px #000;
+  margin-right: 2px;
+}
+.language-block-container {
+  position: relative;
+  margin: 25px 0 15px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  background-color: rgba(250, 250, 250, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.language-header {
+  position: relative;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  padding: 5px 10px;
+  margin-bottom: 10px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.language-text.known-language {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.language-text.known-language:hover {
+  background-color: rgba(108, 138, 165, 0.2);
+} 

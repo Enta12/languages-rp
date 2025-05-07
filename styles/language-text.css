@@ -1,0 +1,27 @@
+.language-text {
+  font-style: italic;
+  display: inline-block;
+  border-bottom: 1px dotted #888;
+  position: relative;
+  padding: 0 2px;
+  margin: 0 2px;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.language-tooltip {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  display: none;
+  z-index: 1000;
+  pointer-events: none;
+}
+
+.language-text:hover .language-tooltip {
+  display: block;
+} 

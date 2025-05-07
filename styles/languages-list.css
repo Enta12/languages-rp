@@ -1,0 +1,18 @@
+.languages-list-display ul {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+.languages-list-display li {
+    margin: 0.3em 0;
+    padding: 0.3em 0.5em;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+}
+.languages-list-display .lang-key {
+    display: inline-block;
+    padding: 0 0.3em;
+    font-size: 0.9em;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+} 

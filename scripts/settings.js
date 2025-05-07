@@ -1,251 +1,592 @@
-const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
+import { MODULE_ID } from "./main.js";
 
+/**
+ * Configuration application for available languages.
+ * @extends FormApplication
+ */
 export class LanguagesConfig extends FormApplication {
+  /**
+   * @override
+   * @returns {FormApplicationOptions}
+   */
   static get defaultOptions() {
-      return mergeObject(super.defaultOptions, {
-          id: "languages-config",
-          title: "Configuration des langues",
-          template: "modules/languages-rp-fork/templates/languages-config.html",
-          width: 500,
-          height: "auto",
-          closeOnSubmit: true
-      });
+    return mergeObject(super.defaultOptions, {
+      id: "languages-config",
+      title: "Language Configuration",
+      template: "modules/languages-rp-fork/templates/languages-config.html",
+      width: 500,
+      height: "auto",
+      closeOnSubmit: true
+    });
   }
 
+  /**
+   * @override
+   * @returns {object} Data for the template.
+   */
   getData() {
-      return {
-          languages: game.settings.get(MODULE_ID, 'availableLanguages')
-      };
-  }
-
-  async _updateObject(event) {
-      event.preventDefault();
-      
-      const languages = [];
-      this.element.find('.language-config-item').each((i, el) => {
-          const name = $(el).find('.language-name').val();
-          if (name && name.trim() !== '') {
-              languages.push(name.trim());
-          }
+    const availableLanguagesSetting = game.settings.get(MODULE_ID, 'availableLanguages') || {};
+    const languageSettings = [];
+    for (const [name, data] of Object.entries(availableLanguagesSetting)) {
+      languageSettings.push({
+        name: name,
+        key: typeof data === 'object' ? data.key : data,
+        font: typeof data === 'object' ? data.font : ''
       });
-      
-      await game.settings.set(MODULE_ID, 'availableLanguages', languages);
-      Hooks.callAll('languagesRPUpdated', languages);
-      ui.notifications.info("Les langues ont été mises à jour avec succès.");
+    }
+    return { languages: languageSettings };
   }
 
-  activateListeners(html) {
-      super.activateListeners(html);
-      
-      html.find('.add-language-config').click(this._onAddLanguage.bind(this));
-      html.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
+  /**
+   * Generates a random key string.
+   * @returns {string} A 40-character random string.
+   * @private
+   */
+  _generateRandomKey() {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    let result = '';
+    for (let i = 0; i < 40; i++) {
+      result += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return result;
   }
-  
-  _onAddLanguage(_) {
-      const newLanguage = $(`
-          <div class="language-config-item">
-              <input type="text" class="language-name" placeholder="Nom de la langue">
-              <button type="button" class="remove-language-config"><i class="fas fa-trash"></i></button>
-          </div>
-      `);
-      
-      this.element.find('.languages-config-list').append(newLanguage);
-      newLanguage.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
-  }
-  
-  _onRemoveLanguage(event) {
-      $(event.currentTarget).closest('.language-config-item').remove();
-  }
-} 
 
-//region Constantes
-const MENU_CATEGORIES = [
-  "saves",
-  "checks",
-  "attack",
-  "damage",
-  "heal",
-  "lookup",
-  "rules",
-  "conditionTypes",
-  "weaponMasteries",
-  "areaTargetTypes",
-  "itemProperties",
-  "abilities",
-  "skills",
-  "damageTypes",
-  "creatureTypes"
-];
-
-const MODULE_ID = "languages-rp-fork";
-
-//region Hook
-Hooks.once("init", () => {
-  // Enregistrement d'un sous-menu de configuration
-  game.settings.registerMenu(MODULE_ID, "menuConfig", {
-    name: game.i18n.localize("DND.SETTINGS.MENU.TITLE"),
-    label: game.i18n.localize("DND.SETTINGS.MENU.LABEL"),
-    hint: game.i18n.localize("DND.SETTINGS.MENU.HINT"),
-    icon: "fas fa-list",
-    type: DnDMenuConfigV2,
-    restricted: true,
-  });
-
-  // Elargir ou non la fenêtre item
-  game.settings.register(MODULE_ID, "widenItemWindows", {
-    name: game.i18n.localize("DND.SETTINGS.PROSEGAP.TITLE"),
-    hint: game.i18n.localize("DND.SETTINGS.PROSEGAP.HINT"),
-    scope: "world",
-    config: true,
-    type: Boolean,
-    default: false,
-    requiresReload: true,
-    onChange: (value) => {
-      if (value) {
-        document.documentElement.classList.add("dnd-widen-windows");
-      } else {
-        document.documentElement.classList.remove("dnd-widen-windows");
+  /**
+   * @override
+   * @param {Event} event - The form submission event.
+   * @returns {Promise<void>}
+   * @protected
+   */
+  async _updateObject(event) {
+    event.preventDefault();
+    const updatedLanguages = {};
+    this.element.find('.language-config-item').each((index, htmlElement) => {
+      const name = $(htmlElement).find('.language-name').val();
+      const key = $(htmlElement).find('.language-key').val();
+      const font = $(htmlElement).find('.language-font').val();
+      if (name && name.trim() !== '') {
+        updatedLanguages[name.trim()] = {
+          key: key || this._generateRandomKey(),
+          font: font || ''
+        };
       }
-    },
+    });
+    await game.settings.set(MODULE_ID, 'availableLanguages', updatedLanguages);
+    Hooks.callAll('languagesRPUpdated', updatedLanguages);
+  }
+
+  /**
+   * @override
+   * @param {JQuery} html - The jQuery object representing the HTML content of the form.
+   */
+  activateListeners(html) {
+    super.activateListeners(html);
+    html.find('.add-language-config').click(this._onAddLanguage.bind(this));
+    html.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
+    html.find('.file-picker').click(this._onFilePicker.bind(this));
+    html.find('.language-font').each((index, fontInputElement) => {
+      const inputElement = $(fontInputElement);
+      const fontPath = inputElement.val();
+      if (fontPath) {
+        const previewElement = inputElement.siblings('.font-preview');
+        const fontFileName = fontPath.split('/').pop().split('.')[0];
+        try {
+          const fontFace = new FontFace(fontFileName, `url("${fontPath}")`);
+          fontFace.load().then(loadedFont => {
+            document.fonts.add(loadedFont);
+            previewElement.css('font-family', fontFileName);
+            previewElement.text('Preview with this font');
+          }).catch(error => {
+            console.error('Error loading font:', error);
+            previewElement.text('Loading error');
+          });
+        } catch (error) {
+          console.error('Error creating FontFace:', error);
+          previewElement.text('Invalid font');
+        }
+      }
+    });
+  }
+
+  /**
+   * Handles adding a new language configuration item.
+   * @param {Event} event - The click event.
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _onAddLanguage(event) {
+    const randomKey = this._generateRandomKey();
+    const newLanguageHTML = await renderTemplate('modules/languages-rp-fork/templates/partials/language-config-item.html', { randomKey });
+    const newLanguageElement = $(newLanguageHTML);
+    this.element.find('.languages-config-list').append(newLanguageElement);
+    newLanguageElement.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
+    newLanguageElement.find('.file-picker').click(this._onFilePicker.bind(this));
+  }
+
+  /**
+   * Handles removing a language configuration item.
+   * @param {Event} event - The click event.
+   * @private
+   */
+  _onRemoveLanguage(event) {
+    $(event.currentTarget).closest('.language-config-item').remove();
+  }
+
+  /**
+   * Handles the file picker interaction for selecting a font file.
+   * @param {Event} event - The click event.
+   * @private
+   */
+  _onFilePicker(event) {
+    event.preventDefault();
+    const buttonElement = event.currentTarget;
+    const targetFieldId = buttonElement.dataset.target;
+    const inputElement = this.element.find(`#${targetFieldId}`);
+    const filePickerInstance = new FilePicker({
+      type: "data",
+      current: inputElement.val(),
+      callback: (path) => {
+        inputElement.val(path);
+        const previewElement = inputElement.siblings('.font-preview');
+        previewElement.text('Preview');
+        const fontFileName = path.split('/').pop().split('.')[0];
+        const fontFace = new FontFace(fontFileName, `url("${path}")`);
+        fontFace.load().then(loadedFont => {
+          document.fonts.add(loadedFont);
+          previewElement.css('font-family', fontFileName);
+          previewElement.text('Preview with this font');
+        }).catch(error => {
+          console.error('Error loading font:', error);
+          previewElement.text('Font loading error');
+        });
+      },
+      allowExtensions: ["woff", "woff2", "ttf", "otf", "eot"]
+    });
+    filePickerInstance.browse();
+  }
+}
+
+/**
+ * Configuration application for proficiency levels.
+ * @extends FormApplication
+ */
+export class ProficiencyLevelsConfig extends FormApplication {
+  /**
+   * @override
+   * @returns {FormApplicationOptions}
+   */
+  static get defaultOptions() {
+    return mergeObject(super.defaultOptions, {
+      id: "proficiency-levels-config",
+      title: "Proficiency Levels Configuration",
+      template: "modules/languages-rp-fork/templates/proficiency-levels-config.html",
+      width: 550,
+      height: "auto",
+      closeOnSubmit: true
+    });
+  }
+
+  /**
+   * Default proficiency levels.
+   * @returns {object} The default proficiency levels.
+   */
+  static get DEFAULT_LEVELS() {
+    return {
+      'beginner': { value: 0.15, color: '#d9c060' },
+      'intermediate': { value: 0.35, color: '#bcc060' },
+      'advanced': { value: 0.60, color: '#9cc060' },
+      'native': { value: 1.0, color: '#60c070' }
+    };
+  }
+
+  /**
+   * @override
+   * @returns {object} Data for the template.
+   */
+  getData() {
+    const proficiencyLevelsSetting = game.settings.get(MODULE_ID, 'proficiencyLevels') || ProficiencyLevelsConfig.DEFAULT_LEVELS;
+    const levelSettings = [];
+    for (const [name, data] of Object.entries(proficiencyLevelsSetting)) {
+      const value = typeof data === 'object' ? data.value : data;
+      const color = typeof data === 'object' ? data.color : this._getDefaultColor(value);
+      levelSettings.push({
+        name: name,
+        value: value,
+        color: color
+      });
+    }
+    levelSettings.sort((a, b) => a.value - b.value);
+    return {
+      levels: levelSettings,
+      worldName: game.world.title
+    };
+  }
+
+  /**
+   * Gets a default color based on the proficiency value.
+   * @param {number} value - The proficiency value (0 to 1).
+   * @returns {string} The hex color string.
+   * @private
+   */
+  _getDefaultColor(value) {
+    const hue = Math.min(60 + (value * 60), 120);
+    return this._hslToHex(hue, 70, 70);
+  }
+
+  /**
+   * Converts HSL color values to a HEX string.
+   * @param {number} h - Hue.
+   * @param {number} s - Saturation.
+   * @param {number} l - Lightness.
+   * @returns {string} The hex color string.
+   * @private
+   */
+  _hslToHex(h, s, l) {
+    l /= 100;
+    const a = s * Math.min(l, 1 - l) / 100;
+    const f = n => {
+      const k = (n + h / 30) % 12;
+      const colorValue = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * colorValue).toString(16).padStart(2, '0');
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  }
+
+  /**
+   * @override
+   * @param {Event} event - The form submission event.
+   * @returns {Promise<void>}
+   * @protected
+   */
+  async _updateObject(event) {
+    event.preventDefault();
+    const updatedLevels = {};
+    const levelElements = this.element.find('.proficiency-level-item');
+    levelElements.each((index, itemElement) => {
+      const $itemElement = $(itemElement);
+      const nameInputElement = $itemElement.find('input[type="text"]');
+      const valueInputElement = $itemElement.find('input[type="number"]');
+      const colorInputElement = $itemElement.find('input[type="color"]');
+      const name = nameInputElement.val().trim();
+      const value = parseFloat(valueInputElement.val());
+      const color = colorInputElement.val();
+      if (name) {
+        updatedLevels[name] = {
+          value: isNaN(value) ? 0.5 : Math.min(Math.max(value, 0), 1),
+          color: color || '#cccccc'
+        };
+      }
+    });
+
+    const hasNativeLevel = Object.values(updatedLevels).some(data =>
+      Math.abs(data.value - 1.0) < 0.001
+    );
+
+    if (!hasNativeLevel && Object.keys(updatedLevels).length > 0) {
+      const highestLevelEntry = Object.entries(updatedLevels)
+        .sort((a, b) => b[1].value - a[1].value)[0];
+      updatedLevels[highestLevelEntry[0]].value = 1.0;
+    }
+
+    if (Object.keys(updatedLevels).length === 0) {
+      Object.assign(updatedLevels, ProficiencyLevelsConfig.DEFAULT_LEVELS);
+    }
+
+    try {
+      const levelsToSave = JSON.parse(JSON.stringify(updatedLevels));
+      await game.settings.set(MODULE_ID, 'proficiencyLevels', levelsToSave);
+      Hooks.callAll('proficiencyLevelsUpdated', levelsToSave);
+    } catch (error) {
+      console.error("Error saving levels:", error);
+      ui.notifications.error("An error occurred while saving proficiency levels.");
+    }
+  }
+
+  /**
+   * @override
+   * @param {JQuery} html - The jQuery object representing the HTML content of the form.
+   */
+  activateListeners(html) {
+    super.activateListeners(html);
+    html.find('.add-level').click(this._onAddLevel.bind(this));
+    html.find('.remove-level').click(this._onRemoveLevel.bind(this));
+    html.find('.reset-defaults').click(this._onResetDefaults.bind(this));
+    html.find('input[type="number"], input[type="color"]').on('input change', () => {
+      // this._updateColorPreviews(html); // Supprimé car la méthode est vide
+    });
+  }
+
+  /**
+   * Handles adding a new proficiency level item.
+   * @param {Event} event - The click event.
+   * @returns {Promise<void>}
+   * @private
+   */
+  async _onAddLevel(event) {
+    const levelsListElement = this.element.find('.proficiency-levels-list');
+    const newLevelIndex = levelsListElement.find('.proficiency-level-item').length;
+    const defaultValue = 0.5;
+    const defaultColor = this._getDefaultColor(defaultValue);
+    const defaultPercentage = Math.round(defaultValue * 100);
+
+    const templatePath = 'modules/languages-rp-fork/templates/partials/proficiency-level-item.html';
+    const templateData = { index: newLevelIndex, value: defaultValue, percentage: defaultPercentage, color: defaultColor };
+    const newLevelHtml = await renderTemplate(templatePath, templateData);
+    const newLevelElement = $(newLevelHtml);
+
+    levelsListElement.append(newLevelElement);
+    newLevelElement.find('.remove-level').click(this._onRemoveLevel.bind(this));
+    newLevelElement.find('input[type="number"]').on('input change', function() {
+      const value = parseFloat($(this).val()) || 0;
+      $(this).closest('.level-value').find('.percentage').text(Math.round(value * 100) + '%');
+      const colorInputElement = $(this).closest('.proficiency-level-item').find('input[type="color"]');
+      if (!colorInputElement.data('manually-changed')) {
+        const newColor = this._getDefaultColor(value);
+        colorInputElement.val(newColor);
+      }
+    }.bind(this));
+    newLevelElement.find('input[type="color"]').on('change', function() {
+      $(this).data('manually-changed', true);
+    });
+  }
+
+  /**
+   * Handles removing a proficiency level item.
+   * @param {Event} event - The click event.
+   * @private
+   */
+  _onRemoveLevel(event) {
+    $(event.currentTarget).closest('.proficiency-level-item').remove();
+  }
+
+  /**
+   * Handles resetting proficiency levels to their default values.
+   * @param {Event} event - The click event.
+   * @private
+   */
+  _onResetDefaults(event) {
+    event.preventDefault();
+    Dialog.confirm({
+      title: "Reset Proficiency Levels",
+      content: "Are you sure you want to reset all proficiency levels to their default values? This action is irreversible.",
+      yes: async () => {
+        const defaultLevelsData = JSON.parse(JSON.stringify(ProficiencyLevelsConfig.DEFAULT_LEVELS));
+        try {
+          await game.settings.set(MODULE_ID, 'proficiencyLevels', defaultLevelsData);
+          this.render(true);
+          Hooks.callAll('proficiencyLevelsUpdated', defaultLevelsData);
+        } catch (error) {
+          console.error("Error resetting levels:", error);
+          ui.notifications.error("An error occurred while resetting proficiency levels.");
+        }
+      },
+      no: () => { }
+    });
+  }
+}
+
+Hooks.once("init", () => {
+  /**
+   * Handlebars helper for basic math operations.
+   * @param {number} leftValue - The left operand.
+   * @param {string} operator - The operator (+, -, *, /).
+   * @param {number} rightValue - The right operand.
+   * @returns {number} The result of the operation, rounded to 2 decimal places.
+   */
+  Handlebars.registerHelper('math', function(leftValue, operator, rightValue) {
+    leftValue = parseFloat(leftValue);
+    rightValue = parseFloat(rightValue);
+    switch (operator) {
+      case '+': return Math.round((leftValue + rightValue) * 100) / 100;
+      case '-': return Math.round((leftValue - rightValue) * 100) / 100;
+      case '*': return Math.round((leftValue * rightValue) * 100) / 100;
+      case '/': return Math.round((leftValue / rightValue) * 100) / 100;
+      default: return leftValue;
+    }
   });
 
   game.settings.register(MODULE_ID, "availableLanguages", {
-    name: 'Langues disponibles',
-    hint: 'Liste des langues disponibles pour les joueurs',
+    name: 'Available Languages',
+    hint: 'List of available languages for players',
     scope: "world",
     config: false,
-    type: Array,
-    default: [],
+    type: Object,
+    default: {},
+  });
+
+  game.settings.register(MODULE_ID, "proficiencyLevels", {
+    name: 'Linguistic Proficiency Levels',
+    hint: 'Configuration of proficiency levels for language comprehension',
+    scope: "world",
+    config: false,
+    type: Object,
+    default: {
+      'beginner': { value: 0.15, color: '#d9c060' },
+      'intermediate': { value: 0.35, color: '#bcc060' },
+      'advanced': { value: 0.60, color: '#9cc060' },
+      'native': { value: 1.0, color: '#60c070' }
+    },
   });
 
   game.settings.registerMenu(MODULE_ID, "languagesConfig", {
-    name: 'Configurer les langues',
-    label: 'Configurer',
-    hint: 'Configurer les langues disponibles pour vos joueurs',
+    name: 'Configure Languages',
+    label: 'Configure',
+    hint: 'Configure the languages available to your players',
     icon: 'fas fa-language',
     type: LanguagesConfig,
     restricted: true
   });
 
-
-  Hooks.once("ready", () => {
-    // Appliquer le style au chargement si le paramètre est activé
-    if (game.settings.get(MODULE_ID, "widenItemWindows")) {
-      document.documentElement.classList.add("dnd-widen-windows");
-    }
+  game.settings.registerMenu(MODULE_ID, "proficiencyLevelsConfig", {
+    name: 'Configure Proficiency Levels',
+    label: 'Configure',
+    hint: 'Configure linguistic proficiency levels and their percentages',
+    icon: 'fas fa-graduation-cap',
+    type: ProficiencyLevelsConfig,
+    restricted: true
   });
 
-  // Enregistrer les paramètres pour chaque catégorie de menu
-  for (const category of MENU_CATEGORIES) {
-    game.settings.register(MODULE_ID, `show${category}`, {
-      name: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.TITLE`),
-      hint: game.i18n.localize("DND.MENU.DESCRIPTION"),
-      scope: "world",
-      config: false,
-      type: Boolean,
-      default: true, // Activer par défaut
+  Hooks.once("ready", () => {
+    if (game.settings.get(MODULE_ID, "widenItemWindows")) {
+      document.documentElement.classList.add(`${MODULE_ID}-widen-windows`);
+    }
+  });
+});
+
+Hooks.once('ready', async () => {
+  const currentLanguagesSetting = game.settings.get(MODULE_ID, 'availableLanguages');
+  if (Array.isArray(currentLanguagesSetting)) {
+    const migratedLanguagesSetting = {};
+    currentLanguagesSetting.forEach(languageName => {
+      const key = LanguagesConfig.prototype._generateRandomKey();
+      migratedLanguagesSetting[languageName] = key;
     });
+    await game.settings.set(MODULE_ID, 'availableLanguages', migratedLanguagesSetting);
+  }
+
+  const currentProficiencyLevels = game.settings.get(MODULE_ID, 'proficiencyLevels');
+  let needsMigration = false;
+  if (currentProficiencyLevels && Object.keys(currentProficiencyLevels).length > 0) {
+    needsMigration = Object.values(currentProficiencyLevels).some(value =>
+      typeof value !== 'object' || !value.hasOwnProperty('value') || !value.hasOwnProperty('color')
+    );
+    if (needsMigration) {
+      const migratedProficiencyLevels = {};
+      Object.entries(currentProficiencyLevels).forEach(([name, value]) => {
+        if (typeof value === 'object' && value.hasOwnProperty('value') && value.hasOwnProperty('color')) {
+          migratedProficiencyLevels[name] = value;
+        } else {
+          const numericValue = typeof value === 'number' ? value : parseFloat(value);
+          if (!isNaN(numericValue)) {
+            const hue = Math.min(60 + (numericValue * 60), 120);
+            const color = ProficiencyLevelsConfig.prototype._hslToHex(hue, 70, 70);
+            migratedProficiencyLevels[name] = {
+              value: numericValue,
+              color: color
+            };
+          }
+        }
+      });
+      const defaultLevels = {
+        'beginner': { value: 0.15, color: '#d9c060' },
+        'intermediate': { value: 0.35, color: '#bcc060' },
+        'advanced': { value: 0.60, color: '#9cc060' },
+        'native': { value: 1.0, color: '#60c070' }
+      };
+      for (const [name, config] of Object.entries(defaultLevels)) {
+        if (!migratedProficiencyLevels[name]) {
+          migratedProficiencyLevels[name] = config;
+        }
+      }
+      await game.settings.set(MODULE_ID, 'proficiencyLevels', migratedProficiencyLevels);
+    }
   }
 });
 
-class DnDMenuConfigV2 extends HandlebarsApplicationMixin(ApplicationV2) {
-  static DEFAULT_OPTIONS = {
-    id: "dnd-menu-config",
-    form: {
-      handler: DnDMenuConfigV2.#onSubmit,
-      closeOnSubmit: true,
-    },
-    position: {
-      width: 480,
-      height: "auto",
-    },
-    tag: "form",
-    window: {
-      title: "DND.SETTINGS.MENU.TITLE",
-      contentClasses: ["reference-form"],
-    },
-  };
+Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
+  const dynamicListContainerId = 'languages-rp-dynamic-list';
+  const dynamicListContainerElement = $(`<div id="${dynamicListContainerId}" class="languages-list-container"></div>`);
+  htmljQueryElement.find(`button[data-key="${MODULE_ID}.languagesConfig"]`).parent().after(dynamicListContainerElement);
 
-  get title() {
-    return game.i18n.localize(this.options.window.title);
-  }
+  /**
+   * Updates the display of the dynamic list of available languages.
+   * @async
+   */
+  const updateDynamicLanguagesListDisplay = async () => {
+    const availableLanguagesData = game.settings.get(MODULE_ID, 'availableLanguages') || {};
+    const languageNamesList = Object.keys(availableLanguagesData);
+    const languagesListDisplayElement = $('<div class="languages-list-display"></div>');
 
-  static PARTS = {
-    dnd: {
-      template: "modules/languages-rp-fork/templates/menu-config.hbs",
-    },
-    footer: {
-      template: "templates/generic/form-footer.hbs",
-    },
-  };
+    const headerHtml = await renderTemplate('modules/languages-rp-fork/templates/partials/languages-list-header.html', { count: languageNamesList.length });
+    const headerElement = $(headerHtml);
+    languagesListDisplayElement.append(headerElement);
 
-  _prepareContext(options) {
-    return {
-      categories: MENU_CATEGORIES.map((category) => ({
-        id: category,
-        name: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.TITLE`),
-        hint: game.i18n.localize(`DND.MENU.${category.toUpperCase()}.HINT`),
-        checked: game.settings.get(MODULE_ID, `show${category}`),
-      })),
-      buttons: [
-        { type: "submit", icon: "fa-solid fa-save", label: "SETTINGS.Save" },
-      ],
-    };
-  }
+    if (languageNamesList.length > 0) {
+      const unorderedListElement = $('<ul></ul>');
+      let fontStyleContent = '';
 
-  static async #onSubmit(event, form, formData) {
-    const settings = foundry.utils.expandObject(formData.object);
-    await Promise.all(
-      Object.entries(settings).map(([key, value]) => {
-        const settingKey = key.startsWith("show") ? key : `show${key}`;
-        return game.settings.set(MODULE_ID, settingKey, value);
-      })
-    );
-  }
-}
+      languageNamesList.forEach((languageName) => {
+        const languageData = availableLanguagesData[languageName];
+        const languageKey = typeof languageData === 'object' ? languageData.key : languageData;
+        const fontPath = typeof languageData === 'object' ? languageData.font : '';
+        let fontClassName = '';
 
-// Ajouter le hook pour afficher la liste des langues dans les paramètres
-Hooks.on('renderSettingsConfig', (app, html) => {
-    const containerId = 'languages-rp-dynamic-list';
-    const container = $(`<div id="${containerId}" class="languages-list-container"></div>`);
-    
-    html.find(`button[data-key="${MODULE_ID}.languagesConfig"]`).parent().after(container);
-    
-    const updateLanguagesList = () => {
-        const languages = game.settings.get(MODULE_ID, 'availableLanguages');
-        
-        const languagesList = $('<div class="languages-list-display"></div>');
-        
-        const header = $(`<h3 class="languages-header">
-            <i class="fas fa-language"></i> 
-            Langues disponibles <span class="language-count">(${languages.length})</span>
-        </h3>`);
-        languagesList.append(header);
-        
-        if (languages.length > 0) {
-            const ul = $('<ul></ul>');
-            languages.forEach(lang => {
-                ul.append(`<li>${lang}</li>`);
+        if (fontPath) {
+          const fontFileName = fontPath.split('/').pop().split('.')[0];
+          const languageIdentifier = languageName.toLowerCase().replace(/\s+/g, '-');
+          fontClassName = `lang-font-${languageIdentifier}`;
+          fontStyleContent += `
+            @font-face {
+              font-family: "${fontFileName}";
+              src: url("${fontPath}");
+            }
+            .${fontClassName} {
+              font-family: "${fontFileName}", sans-serif;
+            }
+          `;
+          try {
+            const fontFace = new FontFace(fontFileName, `url("${fontPath}")`);
+            fontFace.load().then(loadedFont => {
+              document.fonts.add(loadedFont);
+            }).catch(error => {
+              console.error(`Error loading font ${fontPath}:`, error);
             });
-            languagesList.append(ul);
-        } else {
-            languagesList.append('<p class="notes">Aucune langue configurée</p>');
+          } catch (error) {
+            console.error(`Error creating FontFace for ${fontPath}:`, error);
+          }
         }
-        
-        container.fadeOut(200, function() {
-            $(this).empty().append(languagesList).fadeIn(200);
-        });
-    };
-    
-    updateLanguagesList();
-    
-    Hooks.on('updateSetting', (setting) => {
-        if (setting.key === `${MODULE_ID}.availableLanguages`) {
-            updateLanguagesList();
+        const displayedKey = languageKey.length > 15 ? languageKey.substring(0, 15) + '...' : languageKey;
+        const listItemElement = $(`<li>${languageName} - <span class="${fontClassName} lang-key" title="${languageKey}">${displayedKey}</span></li>`);
+        unorderedListElement.append(listItemElement);
+      });
+
+      if (fontStyleContent) {
+        const styleElementId = `${MODULE_ID}-dynamic-font-styles`;
+        let fontStyleElement = document.getElementById(styleElementId);
+        if (!fontStyleElement) {
+          fontStyleElement = document.createElement('style');
+          fontStyleElement.id = styleElementId;
+          document.head.appendChild(fontStyleElement);
         }
+        fontStyleElement.textContent = fontStyleContent;
+      }
+      languagesListDisplayElement.append(unorderedListElement);
+    } else {
+      languagesListDisplayElement.append('<p class="notes">No languages configured</p>');
+    }
+
+    dynamicListContainerElement.fadeOut(200, function() {
+      $(this).empty().append(languagesListDisplayElement).fadeIn(200);
     });
-    
-    Hooks.on('languagesRPUpdated', () => {
-        updateLanguagesList();
-    });
+  };
+
+  updateDynamicLanguagesListDisplay();
+  Hooks.on('updateSetting', (setting) => {
+    if (setting.key === `${MODULE_ID}.availableLanguages`) {
+      updateDynamicLanguagesListDisplay();
+    }
+  });
+  Hooks.on('languagesRPUpdated', () => {
+    updateDynamicLanguagesListDisplay();
+  });
 });
