@@ -59,6 +59,7 @@ export class LanguagesConfig extends FormApplication {
    */
   async _updateObject(event) {
     event.preventDefault();
+    const oldLanguages = game.settings.get(MODULE_ID, 'availableLanguages') || {};
     const updatedLanguages = {};
     this.element.find('.language-config-item').each((index, htmlElement) => {
       const name = $(htmlElement).find('.language-name').val();
@@ -71,8 +72,60 @@ export class LanguagesConfig extends FormApplication {
         };
       }
     });
+    
     await game.settings.set(MODULE_ID, 'availableLanguages', updatedLanguages);
+    
+    await this._cleanupDeletedLanguagesFromActors(oldLanguages, updatedLanguages);
+    
     Hooks.callAll('languagesRPUpdated', updatedLanguages);
+  }
+
+  /**
+   * Clean up references to deleted languages from actors.
+   * @param {Object} oldLanguages - The previous languages configuration.
+   * @param {Object} newLanguages - The updated languages configuration.
+   * @private
+   */
+  async _cleanupDeletedLanguagesFromActors(oldLanguages, newLanguages) {
+    try {
+      const deletedLanguages = Object.keys(oldLanguages).filter(lang => !newLanguages[lang]);
+      
+      if (deletedLanguages.length === 0) return;
+      
+      console.log(`${MODULE_ID} | Cleaning up deleted languages:`, deletedLanguages);
+      
+      let actorsUpdated = 0;
+      
+      for (const actor of game.actors) {
+        try {
+          let actorFlags = actor.flags?.[MODULE_ID] || actor.data?.flags?.[MODULE_ID];
+          if (!actorFlags || !actorFlags.languages) continue;
+          
+          let needsUpdate = false;
+          let actorLanguages = foundry.utils.deepClone(actorFlags.languages || {});
+          
+          for (const lang of deletedLanguages) {
+            if (lang in actorLanguages) {
+              delete actorLanguages[lang];
+              needsUpdate = true;
+            }
+          }
+          
+          if (needsUpdate) {
+            await actor.update({
+              [`flags.${MODULE_ID}.languages`]: actorLanguages
+            });
+            actorsUpdated++;
+            console.log(`${MODULE_ID} | Removed deleted language from actor: ${actor.name}`);
+          }
+        } catch (error) {
+          console.error(`${MODULE_ID} | Error cleaning up for actor ${actor.name}:`, error);
+        }
+      }
+      
+    } catch (error) {
+      console.error(`${MODULE_ID} | Error cleaning up deleted languages:`, error);
+    }
   }
 
   /**
@@ -312,7 +365,6 @@ export class ProficiencyLevelsConfig extends FormApplication {
     html.find('.remove-level').click(this._onRemoveLevel.bind(this));
     html.find('.reset-defaults').click(this._onResetDefaults.bind(this));
     html.find('input[type="number"], input[type="color"]').on('input change', () => {
-      // this._updateColorPreviews(html); // Supprimé car la méthode est vide
     });
   }
 
@@ -386,6 +438,13 @@ export class ProficiencyLevelsConfig extends FormApplication {
 }
 
 Hooks.once("init", () => {
+  const cssPath = `modules/${MODULE_ID}/styles/settings.css`;
+  const link = document.createElement('link');
+  link.type = 'text/css';
+  link.rel = 'stylesheet';
+  link.href = cssPath;
+  document.head.appendChild(link);
+
   /**
    * Handlebars helper for basic math operations.
    * @param {number} leftValue - The left operand.
@@ -517,7 +576,7 @@ Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
     const languageNamesList = Object.keys(availableLanguagesData);
     const languagesListDisplayElement = $('<div class="languages-list-display"></div>');
 
-    const headerHtml = await renderTemplate('modules/languages-rp-fork/templates/partials/languages-list-header.html', { count: languageNamesList.length });
+    const headerHtml = await renderTemplate('modules/languages-rp-fork/templates/partials/languages-list-header.html');
     const headerElement = $(headerHtml);
     languagesListDisplayElement.append(headerElement);
 

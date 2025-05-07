@@ -1,7 +1,7 @@
 {
     "id": "languages-rp-fork",
     "title": "languages-rp-fork",
-    "description": "Add languages to character and let them decrypt texts",
+    "description": "Add languages to character and let them decrypt texts.",
     "version": "0.0.1.2",
     "compatibility": {
         "minimum": "12",
@@ -10,7 +10,14 @@
     "authors": [
         {
             "name": "Enta12",
-            "discord": "Enta12"
+            "discord": "Enta12",
+            "url": "https://baptistecontini.com"
+        }
+    ],
+    "links": [
+        {
+            "name": "The Dice Guild",
+            "url": "https://thediceguild.com"
         }
     ],
     "languages": [
@@ -24,30 +31,6 @@
             "lang": "en",
             "name": "English",
             "path": "lang/en.json",
-            "flags": {}
-        },
-        {
-            "lang": "ru",
-            "name": "Russian",
-            "path": "lang/ru.json",
-            "flags": {}
-        },
-        {
-            "lang": "pt-BR",
-            "name": "Português (Brasil)",
-            "path": "lang/pt-BR.json",
-            "flags": {}
-        },
-        {
-            "lang": "pl",
-            "name": "Polski",
-            "path": "lang/pl.json",
-            "flags": {}
-        },
-        {
-            "lang": "cn",
-            "name": "Simplified Chinese",
-            "path": "lang/cn.json",
             "flags": {}
         }
     ],
