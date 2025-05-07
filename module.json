@@ -1,6 +1,6 @@
 {
-    "id": "languages-rp-fork",
-    "title": "languages-rp-fork",
+    "id": "languages-rp",
+    "title": "languages-rp",
     "description": "Add languages to character and let them decrypt texts.",
     "version": "0.0.1.2",
     "compatibility": {
@@ -12,12 +12,6 @@
             "name": "Enta12",
             "discord": "Enta12",
             "url": "https://baptistecontini.com"
-        }
-    ],
-    "links": [
-        {
-            "name": "The Dice Guild",
-            "url": "https://thediceguild.com"
         }
     ],
     "languages": [

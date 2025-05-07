@@ -87,7 +87,7 @@ Hooks.on('renderApplication', (app, html, data) => {
   }, 100);
 });
 
-const MODULE_ID = "languages-rp-fork";
+const MODULE_ID = "languages-rp";
 
 function getLanguagesFromActorData(actor) {
   const actorLangs = {};

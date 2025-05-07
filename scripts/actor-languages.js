@@ -1,5 +1,7 @@
+import { MODULE_ID } from "./main.js";
+
 export function addActorDirectoryContextMenu(_, contextOptions) {
-    contextOptions.push({
+    contextOptions.unshift({
         name: "Gérer les langues",
         icon: '<i class="fas fa-language"></i>',
         condition: li => {
@@ -21,8 +23,8 @@ export function addActorDirectoryContextMenu(_, contextOptions) {
 export async function onLanguagesButtonClick(_, app) {
     const actor = app.actor;
     if (!actor) return;
-    const availableLanguages = game.settings.get('languages-rp-fork', 'availableLanguages') || {};
-    const actorLanguages = actor.getFlag('languages-rp-fork', 'languages') || [];
+    const availableLanguages = game.settings.get(MODULE_ID, 'availableLanguages') || {};
+    const actorLanguages = actor.getFlag(MODULE_ID, 'languages') || [];
     
     const languageNames = Object.keys(availableLanguages);
     
@@ -30,7 +32,7 @@ export async function onLanguagesButtonClick(_, app) {
         !actorLanguages.some(actorLang => actorLang.name === lang)
     );
 
-    const template = await renderTemplate('modules/languages-rp-fork/templates/languages-dialog.html', {
+    const template = await renderTemplate(`modules/${MODULE_ID}/templates/languages-dialog.html`, {
         actor: actor,
         languages: actorLanguages,
         availableLanguages: languageNames,
@@ -59,8 +61,8 @@ export async function onLanguagesButtonClick(_, app) {
 }
 
 function addLanguage(_, html) {
-    const availableLanguages = game.settings.get('languages-rp-fork', 'availableLanguages') || {};
-    const proficiencyLevels = game.settings.get('languages-rp-fork', 'proficiencyLevels') || {};
+    const availableLanguages = game.settings.get(MODULE_ID, 'availableLanguages') || {};
+    const proficiencyLevels = game.settings.get(MODULE_ID, 'proficiencyLevels') || {};
     
     const languageNames = Object.keys(availableLanguages);
     
@@ -129,5 +131,5 @@ async function saveLanguages(html, actor) {
         }
     });
 
-    await actor.setFlag('languages-rp-fork', 'languages', languages);
+    await actor.setFlag(MODULE_ID, 'languages', languages);
 } 

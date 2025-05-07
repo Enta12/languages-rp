@@ -12,8 +12,8 @@ export class LanguagesConfig extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "languages-config",
-      title: game.i18n.localize("languages-rp-fork.ui.languageConfiguration"),
-      template: "modules/languages-rp-fork/templates/languages-config.html",
+      title: game.i18n.localize("languages-rp.ui.languageConfiguration"),
+      template: "modules/languages-rp/templates/languages-config.html",
       width: 500,
       height: "auto",
       closeOnSubmit: true
@@ -148,14 +148,14 @@ export class LanguagesConfig extends FormApplication {
           fontFace.load().then(loadedFont => {
             document.fonts.add(loadedFont);
             previewElement.css('font-family', fontFileName);
-            previewElement.text(game.i18n.localize("languages-rp-fork.ui.preview"));
+            previewElement.text(game.i18n.localize("languages-rp.ui.preview"));
           }).catch(error => {
             console.error('Error loading font:', error);
-            previewElement.text(game.i18n.localize("languages-rp-fork.ui.loadingError") || 'Loading error');
+            previewElement.text(game.i18n.localize("languages-rp.ui.loadingError") || 'Loading error');
           });
         } catch (error) {
           console.error('Error creating FontFace:', error);
-          previewElement.text(game.i18n.localize("languages-rp-fork.ui.invalidFont") || 'Invalid font');
+          previewElement.text(game.i18n.localize("languages-rp.ui.invalidFont") || 'Invalid font');
         }
       }
     });
@@ -169,7 +169,7 @@ export class LanguagesConfig extends FormApplication {
    */
   async _onAddLanguage(event) {
     const randomKey = this._generateRandomKey();
-    const newLanguageHTML = await renderTemplate('modules/languages-rp-fork/templates/partials/language-config-item.html', { randomKey });
+    const newLanguageHTML = await renderTemplate('modules/languages-rp/templates/partials/language-config-item.html', { randomKey });
     const newLanguageElement = $(newLanguageHTML);
     this.element.find('.languages-config-list').append(newLanguageElement);
     newLanguageElement.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
@@ -201,16 +201,16 @@ export class LanguagesConfig extends FormApplication {
       callback: (path) => {
         inputElement.val(path);
         const previewElement = inputElement.siblings('.font-preview');
-        previewElement.text(game.i18n.localize("languages-rp-fork.ui.preview"));
+        previewElement.text(game.i18n.localize("languages-rp.ui.preview"));
         const fontFileName = path.split('/').pop().split('.')[0];
         const fontFace = new FontFace(fontFileName, `url("${path}")`);
         fontFace.load().then(loadedFont => {
           document.fonts.add(loadedFont);
           previewElement.css('font-family', fontFileName);
-          previewElement.text(game.i18n.localize("languages-rp-fork.ui.preview"));
+          previewElement.text(game.i18n.localize("languages-rp.ui.preview"));
         }).catch(error => {
           console.error('Error loading font:', error);
-          previewElement.text(game.i18n.localize("languages-rp-fork.ui.loadingError") || 'Font loading error');
+          previewElement.text(game.i18n.localize("languages-rp.ui.loadingError") || 'Font loading error');
         });
       },
       allowExtensions: ["woff", "woff2", "ttf", "otf", "eot"]
@@ -231,8 +231,8 @@ export class ProficiencyLevelsConfig extends FormApplication {
   static get defaultOptions() {
     return mergeObject(super.defaultOptions, {
       id: "proficiency-levels-config",
-      title: game.i18n.localize("languages-rp-fork.ui.proficiencyLevelsConfiguration"),
-      template: "modules/languages-rp-fork/templates/proficiency-levels-config.html",
+      title: game.i18n.localize("languages-rp.ui.proficiencyLevelsConfiguration"),
+      template: "modules/languages-rp/templates/proficiency-levels-config.html",
       width: 550,
       height: "auto",
       closeOnSubmit: true
@@ -245,10 +245,10 @@ export class ProficiencyLevelsConfig extends FormApplication {
    */
   static get DEFAULT_LEVELS() {
     return {
-      [game.i18n.localize("languages-rp-fork.proficiencyLevels.beginner")]: { value: 0.15, color: '#d9c060' },
-      [game.i18n.localize("languages-rp-fork.proficiencyLevels.intermediate")]: { value: 0.35, color: '#bcc060' },
-      [game.i18n.localize("languages-rp-fork.proficiencyLevels.advanced")]: { value: 0.60, color: '#9cc060' },
-      [game.i18n.localize("languages-rp-fork.proficiencyLevels.native")]: { value: 1.0, color: '#60c070' }
+      [game.i18n.localize("languages-rp.proficiencyLevels.beginner")]: { value: 0.15, color: '#d9c060' },
+      [game.i18n.localize("languages-rp.proficiencyLevels.intermediate")]: { value: 0.35, color: '#bcc060' },
+      [game.i18n.localize("languages-rp.proficiencyLevels.advanced")]: { value: 0.60, color: '#9cc060' },
+      [game.i18n.localize("languages-rp.proficiencyLevels.native")]: { value: 1.0, color: '#60c070' }
     };
   }
 
@@ -381,7 +381,7 @@ export class ProficiencyLevelsConfig extends FormApplication {
     const defaultColor = this._getDefaultColor(defaultValue);
     const defaultPercentage = Math.round(defaultValue * 100);
 
-    const templatePath = 'modules/languages-rp-fork/templates/partials/proficiency-level-item.html';
+    const templatePath = 'modules/languages-rp/templates/partials/proficiency-level-item.html';
     const templateData = { index: newLevelIndex, value: defaultValue, percentage: defaultPercentage, color: defaultColor };
     const newLevelHtml = await renderTemplate(templatePath, templateData);
     const newLevelElement = $(newLevelHtml);
@@ -419,8 +419,8 @@ export class ProficiencyLevelsConfig extends FormApplication {
   _onResetDefaults(event) {
     event.preventDefault();
     Dialog.confirm({
-      title: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.reset.title"),
-      content: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.reset.content"),
+      title: game.i18n.localize("languages-rp.settings.proficiencyLevels.reset.title"),
+      content: game.i18n.localize("languages-rp.settings.proficiencyLevels.reset.content"),
       yes: async () => {
         const defaultLevelsData = JSON.parse(JSON.stringify(ProficiencyLevelsConfig.DEFAULT_LEVELS));
         try {
@@ -465,8 +465,8 @@ Hooks.once("init", () => {
   });
 
   game.settings.register(MODULE_ID, "availableLanguages", {
-    name: game.i18n.localize("languages-rp-fork.settings.languages.name"),
-    hint: game.i18n.localize("languages-rp-fork.settings.languages.hint"),
+    name: game.i18n.localize("languages-rp.settings.languages.name"),
+    hint: game.i18n.localize("languages-rp.settings.languages.hint"),
     scope: "world",
     config: false,
     type: Object,
@@ -474,8 +474,8 @@ Hooks.once("init", () => {
   });
 
   game.settings.register(MODULE_ID, "proficiencyLevels", {
-    name: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.name"),
-    hint: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.hint"),
+    name: game.i18n.localize("languages-rp.settings.proficiencyLevels.name"),
+    hint: game.i18n.localize("languages-rp.settings.proficiencyLevels.hint"),
     scope: "world",
     config: false,
     type: Object,
@@ -488,18 +488,18 @@ Hooks.once("init", () => {
   });
 
   game.settings.registerMenu(MODULE_ID, "languagesConfig", {
-    name: game.i18n.localize("languages-rp-fork.settings.languages.name"),
-    label: game.i18n.localize("languages-rp-fork.settings.languages.label"),
-    hint: game.i18n.localize("languages-rp-fork.settings.languages.hint"),
+    name: game.i18n.localize("languages-rp.settings.languages.name"),
+    label: game.i18n.localize("languages-rp.settings.languages.label"),
+    hint: game.i18n.localize("languages-rp.settings.languages.hint"),
     icon: 'fas fa-language',
     type: LanguagesConfig,
     restricted: true
   });
 
   game.settings.registerMenu(MODULE_ID, "proficiencyLevelsConfig", {
-    name: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.name"),
-    label: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.label"),
-    hint: game.i18n.localize("languages-rp-fork.settings.proficiencyLevels.hint"),
+    name: game.i18n.localize("languages-rp.settings.proficiencyLevels.name"),
+    label: game.i18n.localize("languages-rp.settings.proficiencyLevels.label"),
+    hint: game.i18n.localize("languages-rp.settings.proficiencyLevels.hint"),
     icon: 'fas fa-graduation-cap',
     type: ProficiencyLevelsConfig,
     restricted: true
@@ -576,7 +576,7 @@ Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
     const languageNamesList = Object.keys(availableLanguagesData);
     const languagesListDisplayElement = $('<div class="languages-list-display"></div>');
 
-    const headerHtml = await renderTemplate('modules/languages-rp-fork/templates/partials/languages-list-header.html');
+    const headerHtml = await renderTemplate('modules/languages-rp/templates/partials/languages-list-header.html');
     const headerElement = $(headerHtml);
     languagesListDisplayElement.append(headerElement);
 
