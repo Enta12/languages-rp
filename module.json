@@ -36,8 +36,8 @@
         "./styles/menu-config.css"
     ],
     "url": "https://github.com/Enta12/languages-rp",
-    "manifest": "https://github.com/Enta12/languages-rp/releases/download/release/module.json",
-    "download": "https://github.com/Enta12/languages-rp/releases/download/release/languages-rp.zip",
+    "manifest": "https://github.com/Enta12/languages-rp/releases/download/latest/module.json",
+    "download": "https://github.com/Enta12/languages-rp/releases/download/latest/languages-rp.zip",
     "flags": {
         "hotReload": {
             "extensions": [
