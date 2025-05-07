@@ -2,7 +2,7 @@
     "id": "languages-rp",
     "title": "languages-rp",
     "description": "Add languages to character and let them decrypt texts.",
-    "version": "0.0.1.2",
+    "version": "0.1",
     "compatibility": {
         "minimum": "12",
         "verified": "13"
@@ -35,6 +35,9 @@
     "styles": [
         "./styles/menu-config.css"
     ],
+    "url": "https://github.com/Enta12/languages-rp",
+    "manifest": "https://github.com/Enta12/languages-rp/releases/download/release/module.json",
+    "download": "https://github.com/Enta12/languages-rp/releases/download/release/languages-rp.zip",
     "flags": {
         "hotReload": {
             "extensions": [
