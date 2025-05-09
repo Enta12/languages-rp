@@ -1,5 +1,5 @@
-import "./text.js/language-headers.js";
-import { encryptText, decryptText } from "./text.js/encryption.js";
+import "./text/language-headers.js";
+import { encryptText, decryptText } from "./text/encryption.js";
 
 export const MODULE_ID = "languages-rp";
 
