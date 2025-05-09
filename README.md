@@ -22,7 +22,9 @@ A Foundry VTT module that allows you to add languages to characters and encrypt/
 1. Activate the module in your world
 2. Configure available languages in the module settings
 3. Add languages to your characters via actor's context
-4. Enclose your text between &Languages[langName] and .&EndLanguages[langName]
+4. In the text editor, click on the language button, select the desired language and write your text
+5. The text will appear encrypted in the editor
+6. To modify the encrypted text, select it and click on the same language button again
 
 ## Supported Languages
 
@@ -59,7 +61,9 @@ Un module pour Foundry VTT qui permet d'ajouter des langues aux personnages et d
 1. Activez le module dans votre monde
 2. Configurez les langues disponibles dans les paramètres du module
 3. Ajoutez des langues à vos personnages via le menu contextuel de l'acteur
-4. Entourez votre texte entre &Languages[nomDeLaLangue] et .&EndLanguages[nomDeLaLangue]
+4. Dans l'éditeur de texte, cliquez sur le bouton de langues, sélectionnez la langue souhaitée et écrivez votre texte
+5. Le texte apparaîtra encrypté dans l'éditeur
+6. Pour modifier un texte encrypté, sélectionnez-le et cliquez à nouveau sur le même bouton de langue
 
 ## Langues supportées
 
