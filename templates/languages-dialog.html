@@ -1,18 +1,45 @@
-<form class="languages-rp-form">
+<form class="languages-rp-dialog-actor">
+    <style>
+        .language-item {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 4px;
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .languages-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding: 4px;
+            padding-bottom: 8px;
+        }
+        .remove-language {
+            width: 35px
+        }
+        .language-id{
+            flex: 1;
+        }
+        .language-level{
+            flex: 1;
+        }
+        .languages-rp-dialog-actor {
+            padding-bottom: 12px;
+        }
+    </style>
     <div class="languages-list">
         {{#each languages}}
         <div class="language-item">
-            <select class="language-name">
-                <option value="">Sélectionnez une langue</option>
+            <select class="language-id">
                 {{#each ../availableLanguages}}
-                <option value="{{this}}" {{#if (eq ../name this)}}selected{{/if}}>{{this}}</option>
+                <option value="{{this.id}}" {{#if (eq this.id ../this.id)}}selected{{/if}}>{{this.name}}</option>
                 {{/each}}
             </select>
             <select class="language-level">
-                <option value="débutant" {{#if (eq level "débutant")}}selected{{/if}}>Débutant</option>
-                <option value="intermédiaire" {{#if (eq level "intermédiaire")}}selected{{/if}}>Intermédiaire</option>
-                <option value="avancé" {{#if (eq level "avancé")}}selected{{/if}}>Avancé</option>
-                <option value="maîtrise" {{#if (eq level "maîtrise")}}selected{{/if}}>Maîtrise</option>
+                {{#each ../proficiencyLevels}}
+                <option value="{{this.id}}" {{#if (eq this.id ../this.id)}}selected{{/if}}>{{this.label}}</option>
+                {{/each}}
             </select>
             <button type="button" class="remove-language"><i class="fas fa-trash"></i></button>
         </div>

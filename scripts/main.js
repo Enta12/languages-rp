@@ -1,4 +1,3 @@
-import { addActorDirectoryContextMenu } from "./actor-languages.js";
 import "./text.js/language-headers.js";
 import { encryptText, decryptText } from "./text.js/encryption.js";
 
@@ -83,8 +82,6 @@ function addLanguageHeaders(html) {
     element.parent().prepend(header);
   });
 }
-
-Hooks.on("getActorDirectoryEntryContext", addActorDirectoryContextMenu);
 
 Hooks.on("renderJournalSheet", (_, html) => {
   addLanguageHeaders(html);

@@ -24,7 +24,9 @@
       "levelColor": "Level color",
       "note": "Note",
       "levelsSortNote": "Levels are sorted by ascending value when saving.",
-      "nativeLevelNote": "The level with value 1.0 represents full comprehension (native level)."
+      "nativeLevelNote": "The level with value 1.0 represents full comprehension (native level).",
+      "manageLanguages": "Manage Languages",
+      "languageManagement": "Language Management"
     },
     "proficiencyLevels": {
       "beginner": "beginner",
@@ -51,6 +53,10 @@
           "content": "Are you sure you want to reset all proficiency levels to their default values? This action is irreversible."
         }
       }
+    },
+    "notifications": {
+      "noLanguagesConfigured": "No languages are configured. Please ask the GM to configure available languages.",
+      "allLanguagesAssigned": "All available languages have already been assigned to this actor."
     }
   }
 } 

@@ -30,7 +30,8 @@
     ],
     "esmodules": [
         "./scripts/main.js",
-        "./scripts/settings.js"
+        "./scripts/settings.js",
+        "./scripts/actor-languages.js"
     ],
     "styles": [
         "./styles/settings.css"
