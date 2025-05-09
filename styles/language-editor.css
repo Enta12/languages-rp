@@ -1,0 +1,12 @@
+.langage-editor-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 800px;
+    max-width: 100%;
+    height: 400px;
+    max-height: 100%;;
+}
+.langage-editor-form label {
+    font-weight: bold;
+}

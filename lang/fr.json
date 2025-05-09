@@ -26,7 +26,11 @@
       "levelsSortNote": "Les niveaux sont triés par valeur croissante au moment de l'enregistrement.",
       "nativeLevelNote": "Le niveau avec la valeur 1.0 représente une compréhension totale (niveau natif).",
       "manageLanguages": "Gérer les langues",
-      "languageManagement": "Gestion des langues"
+      "languageManagement": "Gestion des langues",
+      "languageEditor": "Éditeur {name}",
+      "insert": "Insérer",
+      "languagesMenu": "Menu Langages",
+      "enterText": "Entrez le texte à insérer"
     },
     "proficiencyLevels": {
       "beginner": "débutant",

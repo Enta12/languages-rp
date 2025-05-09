@@ -26,7 +26,11 @@
       "levelsSortNote": "Levels are sorted by ascending value when saving.",
       "nativeLevelNote": "The level with value 1.0 represents full comprehension (native level).",
       "manageLanguages": "Manage Languages",
-      "languageManagement": "Language Management"
+      "languageManagement": "Language Management",
+      "languageEditor": "{name} Editor",
+      "insert": "Insert",
+      "languagesMenu": "Languages Menu",
+      "enterText": "Enter text to insert"
     },
     "proficiencyLevels": {
       "beginner": "beginner",

@@ -31,7 +31,8 @@
     "esmodules": [
         "./scripts/main.js",
         "./scripts/settings.js",
-        "./scripts/actor-languages.js"
+        "./scripts/actor-languages.js",
+        "./scripts/text/editor.js"
     ],
     "styles": [
         "./styles/settings.css"
