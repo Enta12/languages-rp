@@ -109,7 +109,7 @@ async function processJournalContent(app, html) {
     return;
   }
   
-  await new Promise(resolve => setTimeout(resolve, 10));
+  await new Promise(resolve => setTimeout(resolve, 100));
   
   if (html.find('.ProseMirror').length) return;
   
