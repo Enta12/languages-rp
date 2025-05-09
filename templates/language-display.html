@@ -1,0 +1,66 @@
+<div class="language-rp-text language-container" data-lang-id="{{langId}}">
+    <style>
+        .language-rp-text {
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .language-translation-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            padding-bottom: 12px;
+        }
+        .language-translation-action{
+            width: 320px;
+            text-align: center;
+            margin: 0 auto;
+        }
+        .language-translation {
+            padding: 12px;
+            margin: 0;
+        }
+        .language-translation-header {
+            padding: 4px 12px;
+            background-color: rgba(0, 0, 0, 0.20);
+            text-transform: uppercase;
+            font-size: 12px;
+            font-weight: bold;
+
+        }
+        .none-translated{
+            padding: 4px;
+            background-color: rgba(0, 0, 0, 0.10);
+            border-radius: 4px;
+            margin: 0 4px;
+        }
+    </style>
+    <header class="language-translation-header">
+        {{title}}
+    </header>
+    <p
+        class="language-translation language-content language-rp-font-{{langId}}"
+        title="{{langId}}"
+        data-encrypted="{{content}}"
+    >
+        {{content}}
+    </p>
+    <div class="language-translation-actions">
+        {{#if addEncryptBtn}}
+            <button class="language-translation-action encrypt-btn" style="background-color: #aeaeae;">
+                {{localize "languages-rp.ui.encrypt"}}
+            </button>
+        {{/if}}
+        {{#each levels}}
+            <button
+                data-level="{{this.id}}"
+                class="language-translation-action language-level-btn"
+                style="background-color: {{this.color}};"
+            >
+                {{this.name}}
+            </button>
+        {{/each}}
+    </div>
+</div>

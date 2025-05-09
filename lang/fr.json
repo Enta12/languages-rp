@@ -30,12 +30,16 @@
       "languageEditor": "Éditeur {name}",
       "insert": "Insérer",
       "languagesMenu": "Menu Langages",
-      "enterText": "Entrez le texte à insérer"
+      "enterText": "Entrez le texte à insérer",
+      "encrypt": "Chiffrer",
+      "addLanguageButton": "Ajouter une langue",
+      "levelName": "Nom du niveau",
+      "percentage": "Pourcentage"
     },
     "proficiencyLevels": {
       "beginner": "débutant",
       "intermediate": "moyen",
-      "advanced": "fort",
+      "advanced": "avancé",
       "native": "natif"
     },
     "messages": {
@@ -46,14 +50,14 @@
       "languages": {
         "name": "Langues disponibles",
         "label": "Configurer",
-        "hint": "Configurez les langues disponibles pour vos joueurs"
+        "hint": "Configurer les langues disponibles pour vos joueurs"
       },
       "proficiencyLevels": {
-        "name": "Niveaux de maîtrise linguistique",
+        "name": "Niveaux de Maîtrise Linguistique",
         "label": "Configurer",
-        "hint": "Configurez les niveaux de maîtrise et leurs pourcentages",
+        "hint": "Configurer les niveaux de maîtrise linguistique et leurs pourcentages",
         "reset": {
-          "title": "Réinitialiser les niveaux de maîtrise",
+          "title": "Réinitialiser les Niveaux de Maîtrise",
           "content": "Êtes-vous sûr de vouloir réinitialiser tous les niveaux de maîtrise à leurs valeurs par défaut ? Cette action est irréversible."
         }
       }

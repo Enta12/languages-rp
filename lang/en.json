@@ -30,7 +30,11 @@
       "languageEditor": "{name} Editor",
       "insert": "Insert",
       "languagesMenu": "Languages Menu",
-      "enterText": "Enter text to insert"
+      "enterText": "Enter text to insert",
+      "encrypt": "Encrypt",
+      "addLanguageButton": "Add a language",
+      "levelName": "Level name",
+      "percentage": "Percentage"
     },
     "proficiencyLevels": {
       "beginner": "beginner",

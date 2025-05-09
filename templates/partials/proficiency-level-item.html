@@ -1,10 +1,10 @@
 <div class="proficiency-level-config-item">
     <input type="hidden" name="levels[{{id}}][id]" value="{{id}}">
-    <input type="text" name="levels[{{id}}][name]" placeholder="Nom du niveau" required>
+    <input type="text" name="levels[{{id}}][name]" placeholder="{{localize 'languages-rp.ui.levelName'}}" required>
     <div class="level-value">
         <input type="number" name="levels[{{id}}][value]" placeholder="0.0" min="0" max="1" step="0.05" value="{{value}}" required>
-        <span class="percentage">{{percentage}}%</span>
+        <span class="percentage">{{math value "*" 100}}%</span>
     </div>
-    <input type="color" name="levels[{{id}}][color]" value="{{color}}" title="Couleur du niveau">
+    <input type="color" name="levels[{{id}}][color]" value="{{color}}" title="{{localize 'languages-rp.ui.levelColor'}}">
     <button type="button" class="remove-level"><i class="fas fa-trash"></i></button>
 </div> 

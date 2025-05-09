@@ -447,11 +447,6 @@ Hooks.once("init", () => {
     restricted: true
   });
 
-  Hooks.once("ready", () => {
-    if (game.settings.get(MODULE_ID, "widenItemWindows")) {
-      document.documentElement.classList.add(`${MODULE_ID}-widen-windows`);
-    }
-  });
 });
 
 Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {

@@ -1,31 +1,22 @@
 import { MODULE_ID } from "../main.js";
 
-const LANGUAGE_FONT = {
-  getFontName: (language) => {
-    const languagesData =
-      game.settings.get(MODULE_ID, "availableLanguages") || {};
-    const langData = languagesData[language];
-    if (langData && langData.font) {
-      return langData.font.split("/").pop().split(".")[0];
-    }
-    return null;
-  },
-};
-
-function normalizeAccents(text) {
-  return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+//TODO: Customize what we should keep
+//TODO: Accept accents
+function normalizeText(text) {
+  if (!text) return '';
+  return text.normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
 }
 
-export function encryptText(text, language) {
-  if (!text) return text;
-  text = normalizeAccents(text);
-  const languagesData =
-    game.settings.get(MODULE_ID, "availableLanguages") || {};
-  const langData = languagesData[language] || "abcdefghijklmnopqrstuvwxyz"; // Données par défaut
-  const key = typeof langData === "object" ? langData.key : langData;
+export function encryptText(text, key) {
+  if (!text) return;
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
-  let parts = text.split(/(\b\w+\b)/g);
+  const normalizedText = normalizeText(text);
+  let parts = normalizedText.split(/(\b\w+\b)/g);
   return parts
     .map((part) => {
       if (!part.match(/^\w+$/)) return part;
@@ -58,27 +49,10 @@ export function encryptText(text, language) {
     .join("");
 }
 
-export function decryptText(text, language, proficiencyLevel = "natif") {
+export function decryptText(text, key, level, langId) {
   try {
     if (!text) return text;
-    const languagesData =
-      game.settings.get(MODULE_ID, "availableLanguages") || {};
-    const langData = languagesData[language] || "abcdefghijklmnopqrstuvwxyz"; // Données par défaut
-    const key = typeof langData === "object" ? langData.key : langData;
-    const proficiencyConfig = game.settings.get(
-      MODULE_ID,
-      "proficiencyLevels"
-    ) || {
-      débutant: { value: 0.3, color: "#d9c060" },
-      moyen: { value: 0.6, color: "#bcc060" },
-      fort: { value: 0.8, color: "#9cc060" },
-      avancé: { value: 0.9, color: "#7cc060" },
-      natif: { value: 1.0, color: "#60c070" },
-    };
-    const threshold =
-      typeof proficiencyConfig[proficiencyLevel] === "object"
-        ? proficiencyConfig[proficiencyLevel]?.value || 0.3
-        : proficiencyConfig[proficiencyLevel] || 0.3;
+    console.log("text", text, key, level)
     let parts = text.split(/(\b\w+\b)/g);
     let wordsDecrypted = 0;
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
@@ -91,14 +65,12 @@ export function decryptText(text, language, proficiencyLevel = "natif") {
         const alphabetIndex = alphabet.indexOf(keyChar);
         const initialShift = alphabetIndex !== -1 ? alphabetIndex + 1 : 1;
         const difficultyScore = calculateWordScore(part, key);
-        const shouldDecrypt = difficultyScore <= threshold;
+        const shouldDecrypt = difficultyScore <= level.value;
         if (shouldDecrypt) {
           wordsDecrypted++;
           return decryptWord(part, initialShift);
         }
-        return `<span class="language-text" style="font-family: ${
-          LANGUAGE_FONT.getFontName(language) || "inherit"
-        }">${part}</span>`;
+        return `<span class="none-translated language-rp-font-${langId}">${part}</span>`;
       })
       .join("");
     return result;
@@ -169,5 +141,45 @@ export function decryptText(text, language, proficiencyLevel = "natif") {
       0,
       30
     )}...`;
+  }
+}
+
+export function createLanguageFontStyles() {
+  const languages = game.settings.get(MODULE_ID, 'availableLanguages') || {};
+  let styleContent = '';
+  
+  Object.entries(languages).forEach(([langId, langData]) => {
+    if (typeof langData === 'object' && langData.font) {
+      const fontName = langData.font.split('/').pop().split('.')[0];
+      const fontPath = langData.font;
+      
+      styleContent += `
+        @font-face {
+          font-family: "${fontName}";
+          src: url("${fontPath}");
+        }
+        .language-rp-font-${langId} {
+          font-family: "${fontName}", sans-serif !important;
+        }
+      `;
+      
+      try {
+        const fontFace = new FontFace(fontName, `url("${fontPath}")`);
+        fontFace.load().then(loadedFont => {
+          document.fonts.add(loadedFont);
+        }).catch(err => {
+          console.error(`[LANGUAGES RP] Error loading font ${fontPath}:`, err);
+        });
+      } catch (err) {
+        console.error(`[LANGUAGES RP] Error creating font ${fontPath}:`, err);
+      }
+    }
+  });
+  
+  if (styleContent) {
+    const styleElement = document.createElement('style');
+    styleElement.id = 'language-rp-font-styles';
+    styleElement.textContent = styleContent;
+    document.head.appendChild(styleElement);
   }
 }

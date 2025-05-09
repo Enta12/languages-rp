@@ -1,4 +1,5 @@
 import { MODULE_ID } from "../main.js";
+import { encryptText, decryptText } from "./helper.js";
 
 Hooks.on("getProseMirrorMenuDropDowns", async (menu, config) => {
     if(!game.user.isGM) return;
@@ -12,7 +13,17 @@ Hooks.on("getProseMirrorMenuDropDowns", async (menu, config) => {
                 const { from, to } = view.state.selection;
                 let selectedText = from === to ? "" : view.state.doc.textBetween(from, to, " ");
                 
-                selectedText = selectedText.replace(/\[\[[^\]]*\|(.*?)\]\]/g, '$1');
+                // Décrypter le texte s'il est déjà dans le format de langue
+                const languageMatch = selectedText.match(/\[\[language=([^\|]+)\|([^\]]+)\]\]/);
+                if (languageMatch) {
+                    const [_, langId, encryptedText] = languageMatch;
+                    const langData = availableLanguages[langId];
+                    if (langData) {
+                        selectedText = decryptText(encryptedText, langData.key, { value: 1 }, langId);
+                    }
+                } else {
+                    selectedText = selectedText.replace(/\[\[[^\]]*\|(.*?)\]\]/g, '$1');
+                }
                 
                 const content = await renderTemplate(`modules/${MODULE_ID}/templates/language-editor.html`, {
                     selectedText
@@ -30,8 +41,9 @@ Hooks.on("getProseMirrorMenuDropDowns", async (menu, config) => {
                             callback: (event, button, dialog) => {
                                 const textarea = button.form.elements.texte;
                                 const text = textarea.value;
+                                const encryptedText = encryptText(text, availableLanguages[id].key);
                                 if (text) {
-                                    const formattedText = `[[${id}|${text}]]`;
+                                    const formattedText = `[[language=${id}|${encryptedText}]]`;
                                     dispatch(view.state.tr.insertText(formattedText));
                                     view.focus();
                                 }

@@ -46,8 +46,8 @@
         {{/each}}
     </div>
     {{#if availableUnselectedLanguages.length}}
-    <button type="button" class="add-language"><i class="fas fa-plus"></i> Ajouter une langue</button>
+    <button type="button" class="add-language"><i class="fas fa-plus"></i> {{localize "languages-rp.ui.addLanguageButton"}}</button>
     {{else}}
-    <p class="notes">Toutes les langues disponibles ont déjà été attribuées à cet acteur.</p>
+    <p class="notes">{{localize "languages-rp.notifications.allLanguagesAssigned"}}</p>
     {{/if}}
 </form> 
