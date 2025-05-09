@@ -29,9 +29,8 @@ function getLangsLevels(
 }
 
 function getTitle(langName, isLangKnown) {
-
-  if(isLangKnown) return `${langName} - Non traduit`	;
-  return "Langue non étudiée";
+  if(isLangKnown) return game.i18n.format("languages-rp.messages.unknownLanguage", {name: langName});
+  return game.i18n.localize("languages-rp.messages.languageNotStudied");
 }
 
 async function replaceLanguagePatterns(element) {
@@ -80,7 +79,7 @@ async function replaceLanguagePatterns(element) {
         contentElement.classList.remove(`language-rp-font-${langId}`);
         
         const langName = languages[langId]?.name || langId;
-        titleElement.innerHTML = `${langName} - ${currentLevel.name}`;
+        titleElement.innerHTML = game.i18n.format("languages-rp.messages.translatedAs", {name: langName, level: currentLevel.name});
         titleElement.style.backgroundColor = currentLevel.color;
       });
     });
@@ -103,13 +102,22 @@ async function replaceLanguagePatterns(element) {
 }
 
 async function processJournalContent(app, html) {
-  if (app?.options?.proseMirror || html.find('.ProseMirror').length) {
+  if (app?.options?.proseMirror || 
+      html.find('.ProseMirror').length || 
+      html.find('.editor-content').length ||
+      html.find('.editor').length) {
     return;
   }
   
+  await new Promise(resolve => setTimeout(resolve, 10));
+  
+  if (html.find('.ProseMirror').length) return;
+  
   const elements = selectJournalContent(app, html);
   for (let el of elements) {
-    await replaceLanguagePatterns(el);
+    if (!el.closest('.ProseMirror') && !el.querySelector('.ProseMirror')) {
+      await replaceLanguagePatterns(el);
+    }
   }
 }
 

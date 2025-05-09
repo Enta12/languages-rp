@@ -44,7 +44,10 @@
     },
     "messages": {
       "clickToDecrypt": "Click to decrypt",
-      "languageNotKnown": "You don't know this language"
+      "languageNotKnown": "You don't know this language",
+      "languageNotStudied": "Language not studied",
+      "unknownLanguage": "{name} - Untranslated",
+      "translatedAs": "{name} - {level}"
     },
     "settings": {
       "languages": {
