@@ -25,7 +25,7 @@ function getLangsLevels(
   langId
 ) {
   if(isGM) return levels
-  return userLanguages.filter(l => l.id === langId).map(l => levels.find(level => level.id === l.level))
+  return userLanguages?.filter(l => l.id === langId).map(l => levels.find(level => level.id === l.level))
 }
 
 function getTitle(langName, isLangKnown) {
@@ -42,7 +42,7 @@ async function replaceLanguagePatterns(element) {
   }));
   const isGM = game.user.isGM;
   const userActor = game.user.character;
-  const userLanguages = userActor?.flags?.['languages-rp']?.languages || {};
+  const userLanguages = userActor?.flags?.['languages-rp']?.languages;
 
   const pattern = /\[\[language=([^\|]+)\|([^\]]+)\]\]/g;
   const originalHTML = element.innerHTML;
