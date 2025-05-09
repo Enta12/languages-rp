@@ -10,6 +10,8 @@
       "font": "Police",
       "preview": "Aperçu",
       "proficiencyLevel": "Niveau de maîtrise",
+      "availableProficiencyLevels": "Niveaux de maîtrise disponibles",
+      "availableLanguages": "Langues disponibles",
       "noLevel": "Aucun",
       "save": "Sauvegarder",
       "cancel": "Annuler",

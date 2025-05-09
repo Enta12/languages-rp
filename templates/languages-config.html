@@ -1,75 +1,80 @@
 <form class="languages-rp-config-form">
-    <p class="notes">{{localize "languages-rp.ui.languageConfiguration"}}</p>
+    <p>{{localize "languages-rp.ui.languageConfiguration"}}</p>
     
     <style>
         .language-config-item {
             display: flex;
-            margin-bottom: 8px;
-            align-items: center;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 2px;
+            padding: 4px;
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.05);
         }
-        .language-name {
-            flex: 1;
-            margin-right: 8px;
-        }
-        .language-key {
-            flex: 2;
-            margin-right: 8px;
-            font-family: monospace;
-            font-size: 0.9em;
-        }
-        .key-wrapper {
-            position: relative;
-            flex: 2;
-            margin-right: 8px;
-        }
-        .key-truncated {
-            width: 100%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .font-picker-container {
-            flex-basis: 100%;
-            margin-top: 4px;
+        .language-config-font {
             display: flex;
+            gap: 4px;
             align-items: center;
-        }
-        .font-picker-container label {
-            margin-right: 8px;
-            width: 80px;
-        }
-        .font-picker {
-            flex: 1;
         }
         .font-preview {
             margin-left: 8px;
             font-size: 0.9em;
             color: #777;
         }
+        .remove-language-config, .font-picker {
+            width: 35px;
+        }
+        .language-font {
+            width: 120px;
+        }
+        .language-name, .language-key {
+            flex: 1;
+        }
+        .language-config-main {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+        .language-config-font {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .languages-config-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .languages-rp-config-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .languages-rp-config-form-buttons {
+            display: flex;
+            gap: 8px;
+        }
     </style>
     
     <div class="languages-config-list">
         {{#each languages}}
         <div class="language-config-item">
-            <input type="text" class="language-name" value="{{this.name}}" placeholder="{{localize 'languages-rp.ui.languageName'}}">
-            <div class="key-wrapper">
+            <div class="language-config-main">
+                <input type="hidden" class="language-id" value="{{this.id}}">
+                <input type="text" class="language-name" value="{{this.name}}" placeholder="{{localize 'languages-rp.ui.languageName'}}">
                 <input type="text" class="language-key" value="{{this.key}}" placeholder="{{localize 'languages-rp.ui.encryptionKey'}}">
+                <button type="button" class="remove-language-config"><i class="fas fa-trash"></i></button>
             </div>
-            <button type="button" class="remove-language-config"><i class="fas fa-trash"></i></button>
-            <div class="font-picker-container">
+            <div class="language-config-font">
                 <label for="font-{{@index}}">{{localize "languages-rp.ui.font"}}:</label>
-                <button type="button" class="file-picker font-picker" data-type="data" data-target="font-{{@index}}" title="{{localize 'languages-rp.ui.browseFiles'}}"><i class="fas fa-file-import fa-fw"></i></button>
                 <input type="text" class="language-font" id="font-{{@index}}" value="{{this.font}}" placeholder="{{localize 'languages-rp.ui.fontPath'}}" data-dontsubmit>
+                <button type="button" class="font-picker" data-type="data" data-target="font-{{@index}}" title="{{localize 'languages-rp.ui.browseFiles'}}"><i class="fas fa-file-import fa-fw"></i></button>
                 <span class="font-preview">{{#if this.font}}{{localize "languages-rp.ui.preview"}}{{else}}{{localize "languages-rp.ui.noFontSelected"}}{{/if}}</span>
             </div>
         </div>
         {{/each}}
     </div>
-    
-    <button type="button" class="add-language-config"><i class="fas fa-plus"></i> {{localize "languages-rp.ui.addLanguage"}}</button>
-    
-    <div class="form-group">
+    <div class="languages-rp-config-form-buttons">
+        <button type="button" class="add-language-config"><i class="fas fa-plus"></i> {{localize "languages-rp.ui.addLanguage"}}</button>
         <button type="submit" class="submit-languages-config"><i class="fas fa-save"></i> {{localize "languages-rp.ui.save"}}</button>
     </div>
 </form> 

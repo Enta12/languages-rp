@@ -10,6 +10,8 @@
       "font": "Font",
       "preview": "Preview",
       "proficiencyLevel": "Proficiency Level",
+      "availableProficiencyLevels": "Available Proficiency Levels",
+      "availableLanguages": "Available Languages",
       "noLevel": "None",
       "save": "Save",
       "cancel": "Cancel",

@@ -1,32 +1,92 @@
 <form>
+  <style>
+    .proficiency-levels-config-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .proficiency-levels-form {
+      padding: 1em;
+    }
+    .proficiency-level-config-item {
+      display: flex;
+      gap: 2px;
+      padding: 4px;
+      border-radius: 4px;
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    .color-picker {
+      cursor: pointer;
+      width: 100px;
+    }
+    .reset-defaults {
+      align-items: center;
+      display: flex;
+    }
+    .proficiency-levels-form {
+      padding: 1em;
+    }
+    .proficiency-controls {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1em;
+    }
+    .proficiency-level-config-item {
+      display: flex;
+      align-items: center;
+      gap: 1em;
+      margin-bottom: 0.5em;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: rgba(0, 0, 0, 0.03);
+    }
+    .level-name {
+      flex: 2;
+    }
+    .level-value {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    .level-value input {
+      width: 70px;
+    }
+    .form-footer {
+      margin-top: 1em;
+      text-align: right;
+    }
+    .submit-button {
+      font-weight: bold;
+    }
+    .remove-level {
+      width: 35px;
+    }
+  </style>
   <div class="proficiency-levels-form">
     <header class="form-header">
       <h2><i class="fas fa-language"></i> {{localize "languages-rp.ui.proficiencyLevelsConfiguration"}}</h2>
       <p class="notes">{{localize "languages-rp.settings.proficiencyLevels.hint"}}</p>
     </header>
     
-    <div class="form-group proficiency-controls">
+    <div class="proficiency-levels-config-actions">
       <button type="button" class="add-level"><i class="fas fa-plus"></i> {{localize "languages-rp.ui.addLanguage"}}</button>
       <button type="button" class="reset-defaults"><i class="fas fa-undo"></i> {{localize "languages-rp.ui.resetDefaults"}}</button>
     </div>
     
-    <div class="form-group">
+    <div class="proficiency-levels-config-container">
       <div class="proficiency-levels-list">
         {{#each levels}}
-        <div class="proficiency-level-item">
-          <div class="level-name">
-            <input type="text" name="levels[{{@index}}][name]" value="{{this.name}}" placeholder="{{localize 'languages-rp.ui.proficiencyLevel'}}" required>
-          </div>
+        <div class="proficiency-level-config-item">
+          <input type="hidden" name="levels[{{this.id}}][id]" value="{{this.id}}">
+          <input type="text" name="levels[{{this.id}}][name]" value="{{this.name}}" placeholder="{{localize 'languages-rp.ui.proficiencyLevel'}}" required>
           <div class="level-value">
-            <input type="number" name="levels[{{@index}}][value]" value="{{this.value}}" placeholder="0.0" min="0" max="1" step="0.05" required>
+            <input type="number" name="levels[{{this.id}}][value]" value="{{this.value}}" placeholder="0.0" min="0" max="1" step="0.05" required>
             <span class="percentage">{{math this.value "*" 100}}%</span>
           </div>
-          <div class="level-color">
-            <input type="color" name="levels[{{@index}}][color]" value="{{this.color}}" title="{{localize 'languages-rp.ui.levelColor'}}">
-          </div>
-          <div class="level-controls">
-            <button type="button" class="remove-level"><i class="fas fa-trash"></i></button>
-          </div>
+          <input class="color-picker" type="color" name="levels[{{this.id}}][color]" value="{{this.color}}" title="{{localize 'languages-rp.ui.levelColor'}}">
+          <button type="button" class="remove-level"><i class="fas fa-trash"></i></button>
         </div>
         {{/each}}
       </div>
@@ -42,92 +102,3 @@
     </footer>
   </div>
 </form>
-
-<style>
-  .proficiency-levels-form {
-    padding: 1em;
-  }
-  
-  .proficiency-controls {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 1em;
-  }
-  
-  .proficiency-level-item {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    margin-bottom: 0.5em;
-    padding: 0.5em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: rgba(0, 0, 0, 0.03);
-  }
-  
-  .level-name {
-    flex: 2;
-  }
-  
-  .level-value {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
-  
-  .level-value input {
-    width: 70px;
-  }
-  
-  .level-color {
-    flex: 0;
-  }
-  
-  .level-color input {
-    width: 40px;
-    height: 24px;
-    padding: 0;
-    border: 1px solid #ccc;
-    border-radius: 3px;
-    cursor: pointer;
-  }
-  
-  .percentage {
-    min-width: 3em;
-  }
-  
-  .level-controls {
-    flex: 0;
-  }
-  
-  .add-level {
-    margin-top: 0.5em;
-  }
-  
-  .form-footer {
-    margin-top: 1em;
-    text-align: right;
-  }
-  
-  .submit-button {
-    font-weight: bold;
-  }
-  
-  .preview-samples {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
-  }
-  
-  .preview-label {
-    font-size: 0.9em;
-    font-weight: bold;
-  }
-  
-  .preview-box {
-    padding: 0.5em;
-    border-radius: 3px;
-    font-style: italic;
-  }
-</style> 

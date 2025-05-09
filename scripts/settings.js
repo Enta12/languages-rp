@@ -27,12 +27,15 @@ export class LanguagesConfig extends FormApplication {
   getData() {
     const availableLanguagesSetting = game.settings.get(MODULE_ID, 'availableLanguages') || {};
     const languageSettings = [];
-    for (const [name, data] of Object.entries(availableLanguagesSetting)) {
-      languageSettings.push({
-        name: name,
-        key: typeof data === 'object' ? data.key : data,
-        font: typeof data === 'object' ? data.font : ''
-      });
+    for (const [id, data] of Object.entries(availableLanguagesSetting)) {
+      if(typeof data === 'object') {
+        languageSettings.push({
+          name: data.name,
+          key: data.key,
+          font: data.font,
+          id: id
+        });
+      }
     }
     return { languages: languageSettings };
   }
@@ -43,7 +46,7 @@ export class LanguagesConfig extends FormApplication {
    * @private
    */
   _generateRandomKey() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
     let result = '';
     for (let i = 0; i < 40; i++) {
       result += characters.charAt(Math.floor(Math.random() * characters.length));
@@ -59,74 +62,25 @@ export class LanguagesConfig extends FormApplication {
    */
   async _updateObject(event) {
     event.preventDefault();
-    const oldLanguages = game.settings.get(MODULE_ID, 'availableLanguages') || {};
     const updatedLanguages = {};
-    this.element.find('.language-config-item').each((index, htmlElement) => {
+    this.element.find('.language-config-item').each((_, htmlElement) => {
       const name = $(htmlElement).find('.language-name').val();
       const key = $(htmlElement).find('.language-key').val();
       const font = $(htmlElement).find('.language-font').val();
+      const id = $(htmlElement).find('.language-id').val();
       if (name && name.trim() !== '') {
-        updatedLanguages[name.trim()] = {
+        updatedLanguages[id] = {
+          id: id,
+          name: name,
           key: key || this._generateRandomKey(),
           font: font || ''
         };
       }
     });
-    
-    await game.settings.set(MODULE_ID, 'availableLanguages', updatedLanguages);
-    
-    await this._cleanupDeletedLanguagesFromActors(oldLanguages, updatedLanguages);
-    
+    await game.settings.set(MODULE_ID, 'availableLanguages', updatedLanguages);    
     Hooks.callAll('languagesRPUpdated', updatedLanguages);
   }
 
-  /**
-   * Clean up references to deleted languages from actors.
-   * @param {Object} oldLanguages - The previous languages configuration.
-   * @param {Object} newLanguages - The updated languages configuration.
-   * @private
-   */
-  async _cleanupDeletedLanguagesFromActors(oldLanguages, newLanguages) {
-    try {
-      const deletedLanguages = Object.keys(oldLanguages).filter(lang => !newLanguages[lang]);
-      
-      if (deletedLanguages.length === 0) return;
-      
-      console.log(`${MODULE_ID} | Cleaning up deleted languages:`, deletedLanguages);
-      
-      let actorsUpdated = 0;
-      
-      for (const actor of game.actors) {
-        try {
-          let actorFlags = actor.flags?.[MODULE_ID] || actor.data?.flags?.[MODULE_ID];
-          if (!actorFlags || !actorFlags.languages) continue;
-          
-          let needsUpdate = false;
-          let actorLanguages = foundry.utils.deepClone(actorFlags.languages || {});
-          
-          for (const lang of deletedLanguages) {
-            if (lang in actorLanguages) {
-              delete actorLanguages[lang];
-              needsUpdate = true;
-            }
-          }
-          
-          if (needsUpdate) {
-            await actor.update({
-              [`flags.${MODULE_ID}.languages`]: actorLanguages
-            });
-            actorsUpdated++;
-            console.log(`${MODULE_ID} | Removed deleted language from actor: ${actor.name}`);
-          }
-        } catch (error) {
-          console.error(`${MODULE_ID} | Error cleaning up for actor ${actor.name}:`, error);
-        }
-      }
-      
-    } catch (error) {
-      console.error(`${MODULE_ID} | Error cleaning up deleted languages:`, error);
-    }
-  }
 
   /**
    * @override
@@ -136,8 +90,8 @@ export class LanguagesConfig extends FormApplication {
     super.activateListeners(html);
     html.find('.add-language-config').click(this._onAddLanguage.bind(this));
     html.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
-    html.find('.file-picker').click(this._onFilePicker.bind(this));
-    html.find('.language-font').each((index, fontInputElement) => {
+    html.find('.font-picker').click(this._onFilePicker.bind(this));
+    html.find('.language-font').each((_, fontInputElement) => {
       const inputElement = $(fontInputElement);
       const fontPath = inputElement.val();
       if (fontPath) {
@@ -167,13 +121,14 @@ export class LanguagesConfig extends FormApplication {
    * @returns {Promise<void>}
    * @private
    */
-  async _onAddLanguage(event) {
+  async _onAddLanguage(_) {
     const randomKey = this._generateRandomKey();
-    const newLanguageHTML = await renderTemplate('modules/languages-rp/templates/partials/language-config-item.html', { randomKey });
+    const id = `${Date.now()}`;
+    const newLanguageHTML = await renderTemplate('modules/languages-rp/templates/partials/language-config-item.html', { randomKey, id });
     const newLanguageElement = $(newLanguageHTML);
     this.element.find('.languages-config-list').append(newLanguageElement);
     newLanguageElement.find('.remove-language-config').click(this._onRemoveLanguage.bind(this));
-    newLanguageElement.find('.file-picker').click(this._onFilePicker.bind(this));
+    newLanguageElement.find('.font-picker').click(this._onFilePicker.bind(this));
   }
 
   /**
@@ -245,10 +200,10 @@ export class ProficiencyLevelsConfig extends FormApplication {
    */
   static get DEFAULT_LEVELS() {
     return {
-      [game.i18n.localize("languages-rp.proficiencyLevels.beginner")]: { value: 0.15, color: '#d9c060' },
-      [game.i18n.localize("languages-rp.proficiencyLevels.intermediate")]: { value: 0.35, color: '#bcc060' },
-      [game.i18n.localize("languages-rp.proficiencyLevels.advanced")]: { value: 0.60, color: '#9cc060' },
-      [game.i18n.localize("languages-rp.proficiencyLevels.native")]: { value: 1.0, color: '#60c070' }
+      beginner: { name: game.i18n.localize("languages-rp.proficiencyLevels.beginner"), value: 0.15, color: '#d9c060' },
+      intermediate: { name: game.i18n.localize("languages-rp.proficiencyLevels.intermediate"), value: 0.35, color: '#bcc060' },
+      advanced: { name: game.i18n.localize("languages-rp.proficiencyLevels.advanced"), value: 0.60, color: '#9cc060' },
+      native: { name: game.i18n.localize("languages-rp.proficiencyLevels.native"), value: 1.0, color: '#60c070' }
     };
   }
 
@@ -259,14 +214,16 @@ export class ProficiencyLevelsConfig extends FormApplication {
   getData() {
     const proficiencyLevelsSetting = game.settings.get(MODULE_ID, 'proficiencyLevels') || ProficiencyLevelsConfig.DEFAULT_LEVELS;
     const levelSettings = [];
-    for (const [name, data] of Object.entries(proficiencyLevelsSetting)) {
-      const value = typeof data === 'object' ? data.value : data;
-      const color = typeof data === 'object' ? data.color : this._getDefaultColor(value);
-      levelSettings.push({
-        name: name,
-        value: value,
-        color: color
-      });
+    console.log("proficiencyLevelsSetting", proficiencyLevelsSetting);
+    for (const [id, data] of Object.entries(proficiencyLevelsSetting)) {
+      if(typeof data === 'object') {
+        levelSettings.push({
+          id,
+          name: data.name,
+          value: data.value,
+          color: data.color
+        });
+      }
     }
     levelSettings.sort((a, b) => a.value - b.value);
     return {
@@ -314,33 +271,25 @@ export class ProficiencyLevelsConfig extends FormApplication {
   async _updateObject(event) {
     event.preventDefault();
     const updatedLevels = {};
-    const levelElements = this.element.find('.proficiency-level-item');
-    levelElements.each((index, itemElement) => {
+    const levelElements = this.element.find('.proficiency-level-config-item');
+    levelElements.each((_, itemElement) => {
       const $itemElement = $(itemElement);
       const nameInputElement = $itemElement.find('input[type="text"]');
+      const idInputElement = $itemElement.find('input[type="hidden"]');
       const valueInputElement = $itemElement.find('input[type="number"]');
       const colorInputElement = $itemElement.find('input[type="color"]');
       const name = nameInputElement.val().trim();
+      const id = idInputElement.val();
       const value = parseFloat(valueInputElement.val());
       const color = colorInputElement.val();
       if (name) {
-        updatedLevels[name] = {
+        updatedLevels[id] = {
+          name: name,
           value: isNaN(value) ? 0.5 : Math.min(Math.max(value, 0), 1),
           color: color || '#cccccc'
         };
       }
     });
-
-    const hasNativeLevel = Object.values(updatedLevels).some(data =>
-      Math.abs(data.value - 1.0) < 0.001
-    );
-
-    if (!hasNativeLevel && Object.keys(updatedLevels).length > 0) {
-      const highestLevelEntry = Object.entries(updatedLevels)
-        .sort((a, b) => b[1].value - a[1].value)[0];
-      updatedLevels[highestLevelEntry[0]].value = 1.0;
-    }
-
     if (Object.keys(updatedLevels).length === 0) {
       Object.assign(updatedLevels, ProficiencyLevelsConfig.DEFAULT_LEVELS);
     }
@@ -374,15 +323,15 @@ export class ProficiencyLevelsConfig extends FormApplication {
    * @returns {Promise<void>}
    * @private
    */
-  async _onAddLevel(event) {
+  async _onAddLevel(_) {
     const levelsListElement = this.element.find('.proficiency-levels-list');
-    const newLevelIndex = levelsListElement.find('.proficiency-level-item').length;
     const defaultValue = 0.5;
     const defaultColor = this._getDefaultColor(defaultValue);
     const defaultPercentage = Math.round(defaultValue * 100);
+    const id = `${Date.now()}`;
 
     const templatePath = 'modules/languages-rp/templates/partials/proficiency-level-item.html';
-    const templateData = { index: newLevelIndex, value: defaultValue, percentage: defaultPercentage, color: defaultColor };
+    const templateData = { ivalue: defaultValue, percentage: defaultPercentage, color: defaultColor, id };
     const newLevelHtml = await renderTemplate(templatePath, templateData);
     const newLevelElement = $(newLevelHtml);
 
@@ -391,13 +340,13 @@ export class ProficiencyLevelsConfig extends FormApplication {
     newLevelElement.find('input[type="number"]').on('input change', function() {
       const value = parseFloat($(this).val()) || 0;
       $(this).closest('.level-value').find('.percentage').text(Math.round(value * 100) + '%');
-      const colorInputElement = $(this).closest('.proficiency-level-item').find('input[type="color"]');
+      const colorInputElement = $(this).closest('.proficiency-level-config-item').find('input[type="color"]');
       if (!colorInputElement.data('manually-changed')) {
         const newColor = this._getDefaultColor(value);
         colorInputElement.val(newColor);
       }
     }.bind(this));
-    newLevelElement.find('input[type="color"]').on('change', function() {
+      newLevelElement.find('input[type="color"]').on('change', function() {
       $(this).data('manually-changed', true);
     });
   }
@@ -408,7 +357,7 @@ export class ProficiencyLevelsConfig extends FormApplication {
    * @private
    */
   _onRemoveLevel(event) {
-    $(event.currentTarget).closest('.proficiency-level-item').remove();
+    $(event.currentTarget).closest('.proficiency-level-config-item').remove();
   }
 
   /**
@@ -438,13 +387,6 @@ export class ProficiencyLevelsConfig extends FormApplication {
 }
 
 Hooks.once("init", () => {
-  const cssPath = `modules/${MODULE_ID}/styles/settings.css`;
-  const link = document.createElement('link');
-  link.type = 'text/css';
-  link.rel = 'stylesheet';
-  link.href = cssPath;
-  document.head.appendChild(link);
-
   /**
    * Handlebars helper for basic math operations.
    * @param {number} leftValue - The left operand.
@@ -480,10 +422,10 @@ Hooks.once("init", () => {
     config: false,
     type: Object,
     default: {
-      'beginner': { value: 0.15, color: '#d9c060' },
-      'intermediate': { value: 0.35, color: '#bcc060' },
-      'advanced': { value: 0.60, color: '#9cc060' },
-      'native': { value: 1.0, color: '#60c070' }
+      'beginner': { 'name': 'beginner', 'value': 0.15, 'color': '#d9c060' },
+      'intermediate': { 'name': 'intermediate', 'value': 0.35, 'color': '#bcc060' },
+      'advanced': { 'name': 'advanced', 'value': 0.60, 'color': '#9cc060' },
+      'native': { 'name': 'native', 'value': 1.0, 'color': '#60c070' }
     },
   });
 
@@ -512,60 +454,13 @@ Hooks.once("init", () => {
   });
 });
 
-Hooks.once('ready', async () => {
-  const currentLanguagesSetting = game.settings.get(MODULE_ID, 'availableLanguages');
-  if (Array.isArray(currentLanguagesSetting)) {
-    const migratedLanguagesSetting = {};
-    currentLanguagesSetting.forEach(languageName => {
-      const key = LanguagesConfig.prototype._generateRandomKey();
-      migratedLanguagesSetting[languageName] = key;
-    });
-    await game.settings.set(MODULE_ID, 'availableLanguages', migratedLanguagesSetting);
-  }
-
-  const currentProficiencyLevels = game.settings.get(MODULE_ID, 'proficiencyLevels');
-  let needsMigration = false;
-  if (currentProficiencyLevels && Object.keys(currentProficiencyLevels).length > 0) {
-    needsMigration = Object.values(currentProficiencyLevels).some(value =>
-      typeof value !== 'object' || !value.hasOwnProperty('value') || !value.hasOwnProperty('color')
-    );
-    if (needsMigration) {
-      const migratedProficiencyLevels = {};
-      Object.entries(currentProficiencyLevels).forEach(([name, value]) => {
-        if (typeof value === 'object' && value.hasOwnProperty('value') && value.hasOwnProperty('color')) {
-          migratedProficiencyLevels[name] = value;
-        } else {
-          const numericValue = typeof value === 'number' ? value : parseFloat(value);
-          if (!isNaN(numericValue)) {
-            const hue = Math.min(60 + (numericValue * 60), 120);
-            const color = ProficiencyLevelsConfig.prototype._hslToHex(hue, 70, 70);
-            migratedProficiencyLevels[name] = {
-              value: numericValue,
-              color: color
-            };
-          }
-        }
-      });
-      const defaultLevels = {
-        'beginner': { value: 0.15, color: '#d9c060' },
-        'intermediate': { value: 0.35, color: '#bcc060' },
-        'advanced': { value: 0.60, color: '#9cc060' },
-        'native': { value: 1.0, color: '#60c070' }
-      };
-      for (const [name, config] of Object.entries(defaultLevels)) {
-        if (!migratedProficiencyLevels[name]) {
-          migratedProficiencyLevels[name] = config;
-        }
-      }
-      await game.settings.set(MODULE_ID, 'proficiencyLevels', migratedProficiencyLevels);
-    }
-  }
-});
-
 Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
-  const dynamicListContainerId = 'languages-rp-dynamic-list';
-  const dynamicListContainerElement = $(`<div id="${dynamicListContainerId}" class="languages-list-container"></div>`);
-  htmljQueryElement.find(`button[data-key="${MODULE_ID}.languagesConfig"]`).parent().after(dynamicListContainerElement);
+  const dynamicLanguagesListId = 'languages-rp-dynamic-languages-list';
+  const dynamicProficiencyListId = 'languages-rp-dynamic-proficiency-list';
+  const dynamicLanguagesContainerElement = $(`<div id="${dynamicLanguagesListId}" class="languages-list-container"></div>`);
+  const dynamicProficiencyContainerElement = $(`<div id="${dynamicProficiencyListId}" class="proficiency-list-container"></div>`);
+  htmljQueryElement.find(`button[data-key="${MODULE_ID}.languagesConfig"]`).parent().after(dynamicLanguagesContainerElement);
+  htmljQueryElement.find(`button[data-key="${MODULE_ID}.proficiencyLevelsConfig"]`).parent().after(dynamicProficiencyContainerElement);
 
   /**
    * Updates the display of the dynamic list of available languages.
@@ -634,18 +529,59 @@ Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
       languagesListDisplayElement.append('<p class="notes">No languages configured</p>');
     }
 
-    dynamicListContainerElement.fadeOut(200, function() {
+    dynamicLanguagesContainerElement.fadeOut(200, function() {
       $(this).empty().append(languagesListDisplayElement).fadeIn(200);
     });
   };
 
+  /**
+   * Updates the display of the dynamic list of proficiency levels.
+   * @async
+   */
+  const updateDynamicProficiencyListDisplay = async () => {
+    const proficiencyLevelsData = game.settings.get(MODULE_ID, 'proficiencyLevels') || {};
+    const proficiencyListDisplayElement = $('<div class="proficiency-list-display"></div>');
+
+    const headerHtml = await renderTemplate('modules/languages-rp/templates/partials/proficiency-levels-list-header.html');
+    const headerElement = $(headerHtml);
+    proficiencyListDisplayElement.append(headerElement);
+
+    if (Object.keys(proficiencyLevelsData).length > 0) {
+      const unorderedListElement = $('<ul></ul>');
+
+      Object.entries(proficiencyLevelsData)
+        .sort((a, b) => a[1].value - b[1].value)
+        .forEach(([levelName, levelData]) => {
+          const listItemElement = $(`<li style="border-left: 4px solid ${levelData.color}">${levelName} - ${Math.round(levelData.value * 100)}%</li>`);
+          unorderedListElement.append(listItemElement);
+        });
+
+      proficiencyListDisplayElement.append(unorderedListElement);
+    } else {
+      proficiencyListDisplayElement.append('<p class="notes">No proficiency levels configured</p>');
+    }
+
+    dynamicProficiencyContainerElement.fadeOut(200, function() {
+      $(this).empty().append(proficiencyListDisplayElement).fadeIn(200);
+    });
+  };
+
   updateDynamicLanguagesListDisplay();
+  updateDynamicProficiencyListDisplay();
+
   Hooks.on('updateSetting', (setting) => {
     if (setting.key === `${MODULE_ID}.availableLanguages`) {
       updateDynamicLanguagesListDisplay();
+    } else if (setting.key === `${MODULE_ID}.proficiencyLevels`) {
+      updateDynamicProficiencyListDisplay();
     }
   });
+
   Hooks.on('languagesRPUpdated', () => {
     updateDynamicLanguagesListDisplay();
+  });
+
+  Hooks.on('proficiencyLevelsUpdated', () => {
+    updateDynamicProficiencyListDisplay();
   });
 });

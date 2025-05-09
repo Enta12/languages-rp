@@ -1,11 +1,14 @@
 <div class="language-config-item">
-    <input type="text" class="language-name" placeholder="Nom de la langue">
-    <input type="text" class="language-key" placeholder="Clé de chiffrement" value="{{randomKey}}">
-    <button type="button" class="remove-language-config"><i class="fas fa-trash"></i></button>
-    <div class="font-picker-container">
-        <label for="font-new">Police:</label>
-        <button type="button" class="file-picker font-picker" data-type="data" data-target="font-new" title="Parcourir les fichiers"><i class="fas fa-file-import fa-fw"></i></button>
-        <input type="text" class="language-font" id="font-new" placeholder="Chemin vers le fichier de police" data-dontsubmit>
-        <span class="font-preview">Aucune police sélectionnée</span>
+    <div class="language-config-main">
+        <input type="hidden" class="language-id" value="{{this.id}}">
+        <input type="text" class="language-name" value="{{this.name}}" placeholder="{{localize 'languages-rp.ui.languageName'}}">
+        <input type="text" class="language-key" value="{{randomKey}}" placeholder="{{localize 'languages-rp.ui.encryptionKey'}}">
+        <button type="button" class="remove-language-config"><i class="fas fa-trash"></i></button>
     </div>
-</div> 
+    <div class="language-config-font">
+        <label for="font-{{@index}}">{{localize "languages-rp.ui.font"}}:</label>
+        <input type="text" class="language-font" id="font-{{@index}}" value="{{this.font}}" placeholder="{{localize 'languages-rp.ui.fontPath'}}" data-dontsubmit>
+        <button type="button" class="font-picker" data-type="data" data-target="font-{{@index}}" title="{{localize 'languages-rp.ui.browseFiles'}}"><i class="fas fa-file-import fa-fw"></i></button>
+        <span class="font-preview">{{#if this.font}}{{localize "languages-rp.ui.preview"}}{{else}}{{localize "languages-rp.ui.noFontSelected"}}{{/if}}</span>
+    </div>
+</div>
