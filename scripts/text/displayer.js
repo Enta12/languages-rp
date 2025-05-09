@@ -26,6 +26,7 @@ function getLangsLevels(
 ) {
   if(isGM) return levels || []
   if(!userLanguages) return []
+  if(!levels) return []
   return userLanguages.filter(l => l.id === langId).map(l => levels.find(level => level.id === l.level)).filter(l => l)
 }
 
