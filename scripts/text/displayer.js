@@ -92,7 +92,7 @@ async function replaceLanguagePatterns(element) {
         const contentElement = event.target.closest('.language-container').querySelector('.language-content');
         const titleElement = event.target.closest('.language-container').querySelector('.language-translation-header');
         const encryptedContent = contentElement.dataset.encrypted;
-        contentElement.innerHTML = encryptText(encryptedContent, languages[langId]?.key || "abcdefghijklmnopqrstuvwxyz");
+        contentElement.innerHTML = encryptedContent;
         event.target.closest('.language-container').style.backgroundColor = '';
         contentElement.classList.add(`language-rp-font-${langId}`);
         const langName = languages[langId]?.name || langId;

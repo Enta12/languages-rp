@@ -16,143 +16,117 @@ export function encryptText(text, key) {
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
   const normalizedText = normalizeText(text);
-  let parts = normalizedText.split(/(\b\w+\b)/g);
-  return parts
-    .map((part) => {
-      if (!part.match(/^\w+$/)) return part;
-      const wordLength = part.length;
-      const keyIndex = (wordLength - 1) % key.length;
-      const keyChar = key[keyIndex].toLowerCase();
-      const alphabetIndex = alphabet.indexOf(keyChar);
-      const initialShift = alphabetIndex !== -1 ? alphabetIndex + 1 : 1;
-      let encryptedWord = "";
-      for (let i = 0; i < part.length; i++) {
-        const char = part[i];
-        if (!/[a-zA-Z]/.test(char)) {
-          encryptedWord += char;
-          continue;
-        }
-        const isUpperCase = char === char.toUpperCase();
-        const lowerChar = char.toLowerCase();
-        const index = alphabet.indexOf(lowerChar);
-        if (index === -1) {
-          encryptedWord += char;
-          continue;
-        }
-        const shift = (initialShift + i) % 26;
-        const newIndex = (index + shift) % 26;
-        const newChar = alphabet[newIndex];
-        encryptedWord += isUpperCase ? newChar.toUpperCase() : newChar;
+  const parts = normalizedText.split(/(\b\w+\b)/g);
+
+  return parts.map(part => {
+    if (!/^\w+$/.test(part)) return part;
+
+    const rawMarker = part
+      .slice(0, 3)
+      .split('')
+      .reduce((sum, char) => sum + (alphabet.indexOf(char.toLowerCase()) + 1), 0);
+    const markerValue = ((rawMarker - 1) % 26) + 1;
+    const markerChar = alphabet[markerValue - 1];
+
+    let encrypted = '';
+    for (let i = 0; i < part.length; i++) {
+      const ch = part[i];
+      if (!/[a-zA-Z]/.test(ch)) {
+        encrypted += ch;
+        continue;
       }
-      return encryptedWord;
-    })
-    .join("");
+      const keyIdx = (markerValue + i) % key.length;
+      const keyChar = key[keyIdx].toLowerCase();
+      const keyPos = alphabet.indexOf(keyChar) + 1;
+      const idx = alphabet.indexOf(ch.toLowerCase());
+      const shift = (keyPos + markerValue) % 26;
+      const newIdx = (idx + shift) % 26;
+      const newChar = alphabet[newIdx];
+      encrypted += ch === ch.toUpperCase() ? newChar.toUpperCase() : newChar;
+    }
+
+    return markerChar + encrypted;
+  }).join('');
 }
 
-export function decryptText(text, key, level, langId) {
+export function decryptText(text, key, level, langId, userId = game.user.id) {
   try {
     if (!text) return text;
-    console.log("text", text, key, level)
-    let parts = text.split(/(\b\w+\b)/g);
-    let wordsDecrypted = 0;
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    let result = parts
-      .map((part) => {
-        if (!part.match(/^\w+$/)) return part;
-        const wordLength = part.length;
-        const keyIndex = (wordLength - 1) % key.length;
-        const keyChar = key[keyIndex].toLowerCase();
-        const alphabetIndex = alphabet.indexOf(keyChar);
-        const initialShift = alphabetIndex !== -1 ? alphabetIndex + 1 : 1;
-        const difficultyScore = calculateWordScore(part, key);
-        const shouldDecrypt = difficultyScore <= level.value;
-        if (shouldDecrypt) {
-          wordsDecrypted++;
-          return decryptWord(part, initialShift);
-        }
+    const parts = text.split(/(\b\w+\b)/g);
+
+    return parts.map(part => {
+      if (!/^\w+$/.test(part)) return part;
+
+      const firstChar = part[0].toLowerCase();
+      if (!alphabet.includes(firstChar)) return part;
+      const markerChar = firstChar;
+      const markerValue = alphabet.indexOf(markerChar) + 1;
+      if (part.length <= 1) return part;
+      
+      const encryptedWord = part.slice(1);
+
+      const score = calculateWordScore(encryptedWord, key, markerValue, userId);
+      if (score > level.value) {
         return `<span class="none-translated language-rp-font-${langId}">${part}</span>`;
-      })
-      .join("");
-    return result;
+      }
 
-    function calculateWordScore(word, key) {
-      if (!word || word.length === 0) return 0;
-      const len = word.length;
-      let lengthFactor;
-      if (len <= 2) {
-        lengthFactor = 0.1;
-      } else if (len <= 4) {
-        lengthFactor = 0.3;
-      } else if (len <= 6) {
-        lengthFactor = 0.5;
-      } else if (len <= 9) {
-        lengthFactor = 0.7;
-      } else {
-        lengthFactor = 0.9;
-      }
-      let keySum = 0;
-      for (let i = 0; i < key.length; i++) {
-        keySum += key.charCodeAt(i);
-      }
-      const combinedString = word + keySum.toString();
-      const hash =
-        [...combinedString].reduce(
-          (sum, char, i) =>
-            (sum + char.charCodeAt(0) * (i + 1) * keySum) % 1000,
-          0
-        ) / 1000;
-      const hardLetters = key.substring(0, 5);
-      let specialLettersFactor = 0;
-      for (const letter of hardLetters) {
-        if (word.toLowerCase().includes(letter)) {
-          specialLettersFactor += 0.05;
-        }
-      }
-      specialLettersFactor = Math.min(specialLettersFactor, 0.2);
-      const finalScore =
-        lengthFactor * 0.5 + hash * 0.3 + specialLettersFactor * 0.2;
-      return Math.round(finalScore * 100) / 100;
-    }
-
-    function decryptWord(word, initialShift) {
-      let decryptedWord = "";
-      for (let i = 0; i < word.length; i++) {
-        const char = word[i];
-        if (!/[a-zA-Z]/.test(char)) {
-          decryptedWord += char;
+      let decrypted = '';
+      for (let i = 0; i < encryptedWord.length; i++) {
+        const ch = encryptedWord[i];
+        if (!/[a-zA-Z]/.test(ch)) {
+          decrypted += ch;
           continue;
         }
-        const isUpperCase = char === char.toUpperCase();
-        const lowerChar = char.toLowerCase();
-        const index = alphabet.indexOf(lowerChar);
-        if (index === -1) {
-          decryptedWord += char;
-          continue;
-        }
-        const shift = (initialShift + i) % 26;
-        const newIndex = (index - shift + 26) % 26;
-        const newChar = alphabet[newIndex];
-        decryptedWord += isUpperCase ? newChar.toUpperCase() : newChar;
+        const keyIdx = (markerValue + i) % key.length;
+        const keyChar = key[keyIdx].toLowerCase();
+        const keyPos = alphabet.indexOf(keyChar) + 1;
+
+        const idx = alphabet.indexOf(ch.toLowerCase());
+        const shift = (keyPos + markerValue) % 26;
+        const origIdx = (idx - shift + 26) % 26;
+        const origChar = alphabet[origIdx];
+        decrypted += ch === ch.toUpperCase() ? origChar.toUpperCase() : origChar;
       }
-      return decryptedWord;
+
+      return decrypted;
+    }).join('');
+
+  } catch (err) {
+    return `[ERREUR DE DÉCHIFFREMENT: ${err.message}]`;
+  }
+
+  function calculateWordScore(word, key, markerValue, userId) {
+    const len = word.length;
+    // Réduction des valeurs pour la taille des mots
+    let lengthFactor = len <= 2 ? 0.05 : len <= 4 ? 0.15 : len <= 6 ? 0.3 : len <= 9 ? 0.5 : 0.7;
+
+    let keySum = [...key].reduce((sum, c) => sum + c.charCodeAt(0), 0);
+    const combined = word + keySum;
+    const hash = [...combined].reduce((s, c, i) => (s + c.charCodeAt(0) * (i+1) * keySum) % 1000, 0) / 1000;
+
+    let specialFactor = (markerValue % 5) * 0.04;
+    
+    let userFactor = 0.1; // valeur par défaut
+    if (userId) {
+      const userHash = [...userId].reduce((sum, c) => sum + c.charCodeAt(0), 0);
+      const wordHash = [...word].reduce((sum, c, i) => sum + c.charCodeAt(0) * (i+1), 0);
+      const firstRealLetterValue = word.length > 0 ? word.charCodeAt(0) % 26 : 0;
+      userFactor = ((userHash * wordHash + firstRealLetterValue) % 20) / 100;
     }
-  } catch (error) {
-    return `[ERREUR DE DÉCHIFFREMENT: ${error.message}] ${text?.substring(
-      0,
-      30
-    )}...`;
+    const finalScore = lengthFactor * 0.35 + hash * 0.3 + Math.min(specialFactor, 0.2) * 0.2 + userFactor * 0.15;
+    return Math.round(finalScore * 100) / 100;
   }
 }
 
 export function createLanguageFontStyles() {
   const languages = game.settings.get(MODULE_ID, 'availableLanguages') || {};
   let styleContent = '';
-  
+
   Object.entries(languages).forEach(([langId, langData]) => {
     if (typeof langData === 'object' && langData.font) {
       const fontName = langData.font.split('/').pop().split('.')[0];
       const fontPath = langData.font;
-      
       styleContent += `
         @font-face {
           font-family: "${fontName}";
@@ -162,20 +136,14 @@ export function createLanguageFontStyles() {
           font-family: "${fontName}", sans-serif !important;
         }
       `;
-      
       try {
         const fontFace = new FontFace(fontName, `url("${fontPath}")`);
-        fontFace.load().then(loadedFont => {
-          document.fonts.add(loadedFont);
-        }).catch(err => {
-          console.error(`[LANGUAGES RP] Error loading font ${fontPath}:`, err);
-        });
+        fontFace.load().then(loadedFont => document.fonts.add(loadedFont));
       } catch (err) {
-        console.error(`[LANGUAGES RP] Error creating font ${fontPath}:`, err);
+        console.error(`[LANGUAGES RP] Error loading font ${fontPath}:`, err);
       }
     }
   });
-  
   if (styleContent) {
     const styleElement = document.createElement('style');
     styleElement.id = 'language-rp-font-styles';
