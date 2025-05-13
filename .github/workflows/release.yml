@@ -25,26 +25,9 @@ jobs:
         manifest: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.json
         download: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/languages-rp.zip
         url: https://github.com/${{ github.repository }}
-        changelog: https://raw.githubusercontent.com/${{ github.repository }}/main/CHANGELOG.md
 
     - name: Create archive
       run: zip languages-rp.zip module.json -r lang scripts styles templates -x ".*"
-
-    - name: Create or update CHANGELOG.md
-      run: |
-        echo "# Changelog" > CHANGELOG.md
-        echo "" >> CHANGELOG.md
-        echo "## ${{ github.event.release.tag_name }}" >> CHANGELOG.md
-        echo "" >> CHANGELOG.md
-        echo "${{ github.event.release.body }}" >> CHANGELOG.md
-
-    - name: Commit CHANGELOG.md to main
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add CHANGELOG.md
-        git commit -m "chore: update changelog for ${{ github.event.release.tag_name }}" || echo "No changes to commit"
-        git push
 
     - name: Update Release with Files
       id: create_version_release
@@ -67,4 +50,4 @@ jobs:
       with:
         package-token: ${{ secrets.PACKAGE_TOKEN }}
         manifest-url: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.json
-        notes-url: https://raw.githubusercontent.com/${{ github.repository }}/main/CHANGELOG.md
+        notes-url: https://github.com/${{ github.repository }}/releases/${{ github.event.release.tag_name }}

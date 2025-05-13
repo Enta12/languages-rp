@@ -331,7 +331,12 @@ export class ProficiencyLevelsConfig extends FormApplication {
     const id = `${Date.now()}`;
 
     const templatePath = 'modules/languages-rp/templates/partials/proficiency-level-item.html';
-    const templateData = { ivalue: defaultValue, percentage: defaultPercentage, color: defaultColor, id };
+    const templateData = { 
+      value: defaultValue, 
+      percentage: defaultPercentage, 
+      color: defaultColor, 
+      id 
+    };
     const newLevelHtml = await renderTemplate(templatePath, templateData);
     const newLevelElement = $(newLevelHtml);
 
@@ -474,15 +479,18 @@ Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
       const unorderedListElement = $('<ul></ul>');
       let fontStyleContent = '';
 
-      languageNamesList.forEach((languageName) => {
-        const languageData = availableLanguagesData[languageName];
-        const languageKey = typeof languageData === 'object' ? languageData.key : languageData;
-        const fontPath = typeof languageData === 'object' ? languageData.font : '';
+      languageNamesList.forEach((languageId) => {
+        const languageData = availableLanguagesData[languageId];
+        if(typeof languageData !== 'object') return;
+        const languageKey = languageData.key;
+        const fontPath = languageData.font;
+        const displayName = languageData.name;
+
         let fontClassName = '';
 
         if (fontPath) {
           const fontFileName = fontPath.split('/').pop().split('.')[0];
-          const languageIdentifier = languageName.toLowerCase().replace(/\s+/g, '-');
+          const languageIdentifier = languageId.toLowerCase().replace(/\s+/g, '-');
           fontClassName = `lang-font-${languageIdentifier}`;
           fontStyleContent += `
             @font-face {
@@ -505,7 +513,7 @@ Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
           }
         }
         const displayedKey = languageKey.length > 15 ? languageKey.substring(0, 15) + '...' : languageKey;
-        const listItemElement = $(`<li>${languageName} - <span class="${fontClassName} lang-key" title="${languageKey}">${displayedKey}</span></li>`);
+        const listItemElement = $(`<li>${displayName} - <span class="${fontClassName} lang-key" title="${languageKey}">${displayedKey}</span></li>`);
         unorderedListElement.append(listItemElement);
       });
 
@@ -544,9 +552,11 @@ Hooks.on('renderSettingsConfig', (_, htmljQueryElement) => {
     if (Object.keys(proficiencyLevelsData).length > 0) {
       const unorderedListElement = $('<ul></ul>');
 
-      Object.entries(proficiencyLevelsData)
-        .sort((a, b) => a[1].value - b[1].value)
-        .forEach(([levelName, levelData]) => {
+      Object.values(proficiencyLevelsData)
+        .sort((a, b) => a.value - b.value)
+        .forEach((levelData) => {
+          if(typeof levelData !== 'object') return;
+          const levelName = levelData.name;
           const listItemElement = $(`<li style="border-left: 4px solid ${levelData.color}">${levelName} - ${Math.round(levelData.value * 100)}%</li>`);
           unorderedListElement.append(listItemElement);
         });

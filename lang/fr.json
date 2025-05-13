@@ -68,6 +68,35 @@
     "notifications": {
       "noLanguagesConfigured": "Aucune langue n'est configurée. Veuillez demander au MJ de configurer les langues disponibles.",
       "allLanguagesAssigned": "Toutes les langues disponibles ont déjà été attribuées à cet acteur."
+    },
+    "updates": {
+      "title": "Le module a été mis à jour vers la version 1.5 !",
+      "content": [
+        {
+          "title": "Nouveautés",
+          "list" : [
+            "Le chiffrement de mots similaires produit désormais des résultats distincts.",
+            "Le déchiffrement est maintenant spécifique à chaque joueur, donc deux joueurs déchiffreront le même mot différemment."
+          ]
+        },
+        {
+          "title": "Correctif 1.5.1",
+          "list" : [
+            "Correction d'un problème où les mots déjà chiffrés étaient à nouveau chiffrés."
+          ]
+        },
+        {
+          "title": "Correctif 1.5.2",
+          "list" : [
+            "Affichage des noms des langues et des niveaux dans les paramètres au lieu des identifiants.",
+            "Affichage correct des niveaux lors de la configuration des langues d'un acteur. Auparavant, le niveau affiché en haut de la liste n'était pas le niveau réel."
+          ]
+        }
+      ],
+      "version": {
+        "name": "Version précédemment vue",
+        "hint": "Stocke la dernière version du module affichée à l'utilisateur"
+      }
     }
   }
 } 

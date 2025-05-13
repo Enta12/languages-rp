@@ -38,7 +38,7 @@
             </select>
             <select class="language-level">
                 {{#each ../proficiencyLevels}}
-                <option value="{{this.id}}" {{#if (eq this.id ../this.id)}}selected{{/if}}>{{this.label}}</option>
+                <option value="{{this.id}}" {{#if (eq this.id ../this.level)}}selected{{/if}}>{{this.label}}</option>
                 {{/each}}
             </select>
             <button type="button" class="remove-language"><i class="fas fa-trash"></i></button>
