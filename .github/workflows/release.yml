@@ -35,14 +35,22 @@ jobs:
         echo "## ${{ github.event.release.tag_name }}" >> CHANGELOG.md
         echo "" >> CHANGELOG.md
         echo "${{ github.event.release.body }}" >> CHANGELOG.md
+    
+    - name: Checkout files and main branch
+      uses: actions/checkout@v2
+      with:
+        ref: main
+        fetch-depth: 0
+        submodules: recursive
+
     - name: Commit CHANGELOG.md to main
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git checkout main
         git add CHANGELOG.md
-        git commit -m "chore: update changelog for ${{ github.event.release.tag_name }}"
+        git commit -m "chore: update changelog for ${{ github.event.release.tag_name }}" || echo "No changes to commit"
         git push
+
 
     - name: Update Release with Files
       id: create_version_release
