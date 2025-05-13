@@ -45,7 +45,7 @@ jobs:
         draft: ${{ github.event.release.unpublished }}
         prerelease: ${{ github.event.release.prerelease }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json, ./languages-rp.zip ./CHANGELOG.md'
+        artifacts: './module.json, ./languages-rp.zip, ./CHANGELOG.md'
         tag: ${{ github.event.release.tag_name }}
         body: ${{ github.event.release.body }}        
         makeLatest: ${{ github.event.release.prerelease && 'false' || 'legacy' }}
