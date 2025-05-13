@@ -8,9 +8,11 @@ jobs:
   build:    
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout files
+    - name: Checkout main branch
       uses: actions/checkout@v2
       with:
+        ref: main
+        fetch-depth: 0
         submodules: recursive
 
     - name: Substitute Manifest and Download Links For Versioned Ones
@@ -19,29 +21,22 @@ jobs:
       with:
         files: 'module.json'
       env:
-        version: ${{github.event.release.tag_name}}
-        manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
-        download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/languages-rp.zip
-        url: https://github.com/${{github.repository}}
+        version: ${{ github.event.release.tag_name }}
+        manifest: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.json
+        download: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/languages-rp.zip
+        url: https://github.com/${{ github.repository }}
         changelog: https://raw.githubusercontent.com/${{ github.repository }}/main/CHANGELOG.md
 
     - name: Create archive
-      run:  zip languages-rp.zip module.json -r lang scripts styles templates -x ".*"
+      run: zip languages-rp.zip module.json -r lang scripts styles templates -x ".*"
 
-    - name: create CHANGELOG.md
+    - name: Create or update CHANGELOG.md
       run: |
         echo "# Changelog" > CHANGELOG.md
         echo "" >> CHANGELOG.md
         echo "## ${{ github.event.release.tag_name }}" >> CHANGELOG.md
         echo "" >> CHANGELOG.md
         echo "${{ github.event.release.body }}" >> CHANGELOG.md
-    
-    - name: Checkout files and main branch
-      uses: actions/checkout@v2
-      with:
-        ref: main
-        fetch-depth: 0
-        submodules: recursive
 
     - name: Commit CHANGELOG.md to main
       run: |
@@ -50,7 +45,6 @@ jobs:
         git add CHANGELOG.md
         git commit -m "chore: update changelog for ${{ github.event.release.tag_name }}" || echo "No changes to commit"
         git push
-
 
     - name: Update Release with Files
       id: create_version_release
@@ -72,5 +66,5 @@ jobs:
       uses: cs96and/FoundryVTT-release-package@v1
       with:
         package-token: ${{ secrets.PACKAGE_TOKEN }}
-        manifest-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
+        manifest-url: https://github.com/${{ github.repository }}/releases/download/${{ github.event.release.tag_name }}/module.json
         notes-url: https://raw.githubusercontent.com/${{ github.repository }}/main/CHANGELOG.md
