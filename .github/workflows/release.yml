@@ -20,14 +20,22 @@ jobs:
         files: 'module.json'
       env:
         version: ${{github.event.release.tag_name}}
-        manifest: https://github.com/${{github.repository}}/releases/latest/download/module.json
+        manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
         download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/languages-rp.zip
         url: https://github.com/${{github.repository}}
-        changelog: https://github.com/${{github.repository}}/releases/tag/${{github.event.release.tag_name}}
+        changelog: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/CHANGELOG.md
 
     - name: Create archive
       run:  zip languages-rp.zip module.json -r lang scripts styles templates -x ".*"
 
+    - name: create CHANGELOG.md
+      run: |
+        echo "# Changelog" > CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        echo "## ${{ github.event.release.tag_name }}" >> CHANGELOG.md
+        echo "" >> CHANGELOG.md
+        echo "${{ github.event.release.body }}" >> CHANGELOG.md
+    
     - name: Update Release with Files
       id: create_version_release
       uses: ncipollo/release-action@v1
@@ -37,7 +45,7 @@ jobs:
         draft: ${{ github.event.release.unpublished }}
         prerelease: ${{ github.event.release.prerelease }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json, ./languages-rp.zip'
+        artifacts: './module.json, ./languages-rp.zip ./CHANGELOG.md'
         tag: ${{ github.event.release.tag_name }}
         body: ${{ github.event.release.body }}        
         makeLatest: ${{ github.event.release.prerelease && 'false' || 'legacy' }}
@@ -49,4 +57,4 @@ jobs:
       with:
         package-token: ${{ secrets.PACKAGE_TOKEN }}
         manifest-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
-        notes-url: https://github.com/${{github.repository}}/releases/tag/${{github.event.release.tag_name}}
+        notes-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/CHANGELOG.md
