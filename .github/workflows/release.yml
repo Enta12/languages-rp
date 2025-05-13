@@ -23,7 +23,7 @@ jobs:
         manifest: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
         download: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/languages-rp.zip
         url: https://github.com/${{github.repository}}
-        changelog: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/CHANGELOG.md
+        changelog: https://raw.githubusercontent.com/${{ github.repository }}/main/CHANGELOG.md
 
     - name: Create archive
       run:  zip languages-rp.zip module.json -r lang scripts styles templates -x ".*"
@@ -35,7 +35,15 @@ jobs:
         echo "## ${{ github.event.release.tag_name }}" >> CHANGELOG.md
         echo "" >> CHANGELOG.md
         echo "${{ github.event.release.body }}" >> CHANGELOG.md
-    
+    - name: Commit CHANGELOG.md to main
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout main
+        git add CHANGELOG.md
+        git commit -m "chore: update changelog for ${{ github.event.release.tag_name }}"
+        git push
+
     - name: Update Release with Files
       id: create_version_release
       uses: ncipollo/release-action@v1
@@ -45,7 +53,7 @@ jobs:
         draft: ${{ github.event.release.unpublished }}
         prerelease: ${{ github.event.release.prerelease }}
         token: ${{ secrets.GITHUB_TOKEN }}
-        artifacts: './module.json, ./languages-rp.zip, ./CHANGELOG.md'
+        artifacts: './module.json, ./languages-rp.zip'
         tag: ${{ github.event.release.tag_name }}
         body: ${{ github.event.release.body }}        
         makeLatest: ${{ github.event.release.prerelease && 'false' || 'legacy' }}
@@ -57,4 +65,4 @@ jobs:
       with:
         package-token: ${{ secrets.PACKAGE_TOKEN }}
         manifest-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/module.json
-        notes-url: https://github.com/${{github.repository}}/releases/download/${{github.event.release.tag_name}}/CHANGELOG.md
+        notes-url: https://raw.githubusercontent.com/${{ github.repository }}/main/CHANGELOG.md
