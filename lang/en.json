@@ -91,6 +91,12 @@
             "Display of language names and levels in settings instead of IDs.",
             "Correct display of levels when configuring an actor's languages. Previously, the level shown at the top of the list was not the actual level."
           ]
+        },
+        {
+          "title": "Fix 1.5.3",
+          "list" : [
+            "Compatibility with Foundry VTT 13."
+          ]
         }
       ],
       "version": {

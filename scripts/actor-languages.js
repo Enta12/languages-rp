@@ -1,6 +1,9 @@
 import { MODULE_ID } from "./main.js";
 
-Hooks.on("getActorDirectoryEntryContext", addActorDirectoryContextMenu);
+Hooks.once("init", () => {
+    console.log("[Languages-RP] Initialisation du hook getActorContextOptions");
+    Hooks.on("getActorContextOptions", addActorDirectoryContextMenu);
+  });
 
 function getProficiencyLevels() {
     const proficiencyLevels= game.settings.get(MODULE_ID, 'proficiencyLevels') || {};
@@ -14,12 +17,12 @@ function addActorDirectoryContextMenu(_, contextOptions) {
         name: game.i18n.localize("languages-rp.ui.manageLanguages"),
         icon: '<i class="fas fa-language"></i>',
         condition: li => {
-            const actorId = li.data("document-id");
+            const actorId = li.dataset.entryId;
             const actor = game.actors.get(actorId);
             return actor && actor.type === "character" && (game.user.isGM || actor.isOwner);
         },
         callback: li => {
-            const actorId = li.data("document-id");
+            const actorId = li.dataset.entryId;
             const actor = game.actors.get(actorId);
             if (actor) {
                 onLanguagesButtonClick(null, { actor: actor });

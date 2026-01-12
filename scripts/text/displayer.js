@@ -2,8 +2,17 @@ import { MODULE_ID } from "../main.js";
 import { encryptText, decryptText, createLanguageFontStyles } from "./helper.js";
 
 function selectJournalContent(app, html) {
-  const root = app?.element?.[0] || html?.[0];
+  let root;
+  if (html instanceof jQuery) {
+    root = html[0];
+  } else if (html instanceof HTMLElement) {
+    root = html;
+  } else if (app?.element) {
+    root = app.element instanceof jQuery ? app.element[0] : app.element;
+  }
+  
   if (!root) return [];
+  
   const selectors = [
     '.journal-sheet-content',
     '.journal-sheet-body',
@@ -53,7 +62,7 @@ async function replaceLanguagePatterns(element) {
   let newHTML = originalHTML;
   for (const match of matches) {
     const [fullMatch, langId, content] = match;
-    const langLevels = getLangsLevels(isGM, userLanguages, levels, langId)
+    const langLevels = getLangsLevels(isGM, userLanguages, levels, langId);
     const template = await renderTemplate(`modules/languages-rp/templates/language-display.html`, {
       langId,
       title: getTitle(languages[langId]?.name, !!langLevels.length),
@@ -104,16 +113,18 @@ async function replaceLanguagePatterns(element) {
 }
 
 async function processJournalContent(app, html) {
+  const root = html instanceof jQuery ? html[0] : html;
+  
   if (app?.options?.proseMirror || 
-      html.find('.ProseMirror').length || 
-      html.find('.editor-content').length ||
-      html.find('.editor').length) {
+      root.querySelector('.ProseMirror') || 
+      root.querySelector('.editor-content') ||
+      root.querySelector('.editor')) {
     return;
   }
   
   await new Promise(resolve => setTimeout(resolve, 100));
   
-  if (html.find('.ProseMirror').length) return;
+  if (root.querySelector('.ProseMirror')) return;
   
   const elements = selectJournalContent(app, html);
   for (let el of elements) {
@@ -123,9 +134,15 @@ async function processJournalContent(app, html) {
   }
 }
 
-Hooks.on('renderJournalSheet', async (app, html) => await processJournalContent(app, html));
-Hooks.on('renderJournalPageSheet', async (app, html) => await processJournalContent(app, html));
 
+
+console.log("[Languages-RP] ce fichier est chargé");
 Hooks.once('init', () => {
   createLanguageFontStyles();
+});
+
+Hooks.on('renderApplicationV2', async (app, html) => {
+  if  (app.constructor.name === "JournalEntrySheet") {
+    await processJournalContent(app, html);
+  }
 });
