@@ -34,7 +34,15 @@
       "encrypt": "Chiffrer",
       "addLanguageButton": "Ajouter une langue",
       "levelName": "Nom du niveau",
-      "percentage": "Pourcentage"
+      "percentage": "Pourcentage",
+      "knownWords": "Mots connus",
+      "addKnownWord": "Ajouter un mot connu",
+      "knownWordPlaceholder": "Entrez un mot (ex: Arbre)",
+      "manageKnownWords": "Gérer les mots connus",
+      "languageLevelsTab": "Niveaux de langues",
+      "knownWordsTab": "Mots connus",
+      "selectLanguageForKnownWords": "Sélectionner une langue",
+      "decryptKnownWords": "Déchiffrer les mots connus"
     },
     "proficiencyLevels": {
       "beginner": "débutant",
@@ -67,13 +75,22 @@
     },
     "notifications": {
       "noLanguagesConfigured": "Aucune langue n'est configurée. Veuillez demander au MJ de configurer les langues disponibles.",
-      "allLanguagesAssigned": "Toutes les langues disponibles ont déjà été attribuées à cet acteur."
+      "allLanguagesAssigned": "Toutes les langues disponibles ont déjà été attribuées à cet acteur.",
+      "wordAlreadyKnown": "Le mot \"{word}\" est déjà dans la liste des mots connus."
     },
     "updates": {
-      "title": "Le module a été mis à jour vers la version 1.5 !",
+      "title": "Le module a été mis à jour vers la version 1.6 !",
       "content": [
         {
-          "title": "Nouveautés",
+          "title": "Nouveautés (1.6)",
+          "list" : [
+            "Ajout des mots connus configurables pour une langue et un personnage permettant de déchiffrer certains mots sans connaissance de la langue.",
+            "Ajout des mots similaires : calcul des mots ressemblant au mot encrypté afin de pouvoir afficher le mot connu à la place du mot encrypté avec un pourcentage de ressemblance.",
+            "Déplacement des majuscules : le premier caractère encrypté est en majuscule si le mot commence par une majuscule."
+          ]
+        },
+        {
+          "title": "Nouveautés (1.5)",
           "list" : [
             "Le chiffrement de mots similaires produit désormais des résultats distincts.",
             "Le déchiffrement est maintenant spécifique à chaque joueur, donc deux joueurs déchiffreront le même mot différemment."

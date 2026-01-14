@@ -36,3 +36,9 @@
   .language-tooltip {
     display: none !important;
   }
+  .similar-word {
+    color: #ff4444 !important;
+    text-decoration: underline;
+    text-decoration-style: wavy;
+    cursor: help;
+  }

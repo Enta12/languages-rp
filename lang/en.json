@@ -34,7 +34,15 @@
       "encrypt": "Encrypt",
       "addLanguageButton": "Add a language",
       "levelName": "Level name",
-      "percentage": "Percentage"
+      "percentage": "Percentage",
+      "knownWords": "Known Words",
+      "addKnownWord": "Add known word",
+      "knownWordPlaceholder": "Enter a word (e.g.: Tree)",
+      "manageKnownWords": "Manage known words",
+      "languageLevelsTab": "Language Levels",
+      "knownWordsTab": "Known Words",
+      "selectLanguageForKnownWords": "Select a language",
+      "decryptKnownWords": "Decrypt Known Words"
     },
     "proficiencyLevels": {
       "beginner": "beginner",
@@ -67,13 +75,22 @@
     },
     "notifications": {
       "noLanguagesConfigured": "No languages are configured. Please ask the GM to configure available languages.",
-      "allLanguagesAssigned": "All available languages have already been assigned to this actor."
+      "allLanguagesAssigned": "All available languages have already been assigned to this actor.",
+      "wordAlreadyKnown": "The word \"{word}\" is already in the known words list."
     },
     "updates": {
-      "title": "The module has been updated to version 1.5!",
+      "title": "The module has been updated to version 1.6!",
       "content": [
         {
-          "title": "New Features",
+          "title": "New Features (1.6)",
+          "list" : [
+            "Configurable known words for a language and a character, allowing decryption of certain words without knowledge of the language.",
+            "Similar words feature: calculation of words resembling the encrypted word to display the known word instead of the encrypted word with a similarity percentage.",
+            "Capitalization preservation: the first encrypted character is capitalized if the word starts with a capital letter."
+          ]
+        },
+        {
+          "title": "New Features (1.5)",
           "list" : [
             "Encryption of similar words now yields distinct outputs.",
             "Decryption is now player-specific, so two players will decrypt the same word differently."

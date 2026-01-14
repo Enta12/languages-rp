@@ -1,5 +1,31 @@
 <form class="languages-rp-dialog-actor">
     <style>
+        .languages-rp-tabs {
+            display: flex;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.2);
+            margin-bottom: 8px;
+        }
+        .languages-rp-tab {
+            flex: 1;
+            padding: 8px 16px;
+            text-align: center;
+            cursor: pointer;
+            background-color: rgba(0, 0, 0, 0.05);
+            border: none;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+        .languages-rp-tab.active {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-bottom-color: #4a52e2;
+            font-weight: bold;
+        }
+        .languages-rp-tab-content {
+            display: none;
+        }
+        .languages-rp-tab-content.active {
+            display: block;
+        }
         .language-item {
             display: flex;
             align-items: center;
@@ -27,27 +53,101 @@
         .languages-rp-dialog-actor {
             padding-bottom: 12px;
         }
+        .known-words-language-selector {
+            margin-bottom: 12px;
+        }
+        .known-words-language-selector select {
+            width: 100%;
+        }
+        .known-words-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .known-word-item {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            padding: 4px;
+            border-radius: 4px;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        .known-word-input {
+            flex: 1;
+        }
+        .remove-known-word {
+            width: 30px;
+        }
+        .add-known-word-container {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            margin-top: 8px;
+        }
+        .new-known-word-input {
+            flex: 1;
+        }
+        .add-known-word {
+            width: 35px;
+        }
     </style>
-    <div class="languages-list">
-        {{#each languages}}
-        <div class="language-item">
-            <select class="language-id">
-                {{#each ../availableLanguages}}
-                <option value="{{this.id}}" {{#if (eq this.id ../this.id)}}selected{{/if}}>{{this.name}}</option>
-                {{/each}}
-            </select>
-            <select class="language-level">
-                {{#each ../proficiencyLevels}}
-                <option value="{{this.id}}" {{#if (eq this.id ../this.level)}}selected{{/if}}>{{this.label}}</option>
-                {{/each}}
-            </select>
-            <button type="button" class="remove-language"><i class="fas fa-trash"></i></button>
-        </div>
-        {{/each}}
+    
+    <div class="languages-rp-tabs">
+        <button type="button" class="languages-rp-tab active" data-tab="levels">{{localize "languages-rp.ui.languageLevelsTab"}}</button>
+        <button type="button" class="languages-rp-tab" data-tab="known-words">{{localize "languages-rp.ui.knownWordsTab"}}</button>
     </div>
-    {{#if availableUnselectedLanguages.length}}
-    <button type="button" class="add-language"><i class="fas fa-plus"></i> {{localize "languages-rp.ui.addLanguageButton"}}</button>
-    {{else}}
-    <p class="notes">{{localize "languages-rp.notifications.allLanguagesAssigned"}}</p>
-    {{/if}}
-</form> 
+    
+    <div class="languages-rp-tab-content active" data-tab="levels">
+        <div class="languages-list">
+            {{#each languages}}
+            <div class="language-item" data-lang-id="{{this.id}}">
+                <select class="language-id">
+                    {{#each ../availableLanguages}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../this.id)}}selected{{/if}}>{{this.name}}</option>
+                    {{/each}}
+                </select>
+                <select class="language-level">
+                    {{#each ../proficiencyLevels}}
+                    <option value="{{this.id}}" {{#if (eq this.id ../this.level)}}selected{{/if}}>{{this.label}}</option>
+                    {{/each}}
+                </select>
+                <button type="button" class="remove-language"><i class="fas fa-trash"></i></button>
+            </div>
+            {{/each}}
+        </div>
+        {{#if availableUnselectedLanguages.length}}
+        <button type="button" class="add-language"><i class="fas fa-plus"></i> {{localize "languages-rp.ui.addLanguageButton"}}</button>
+        {{else}}
+        <p class="notes">{{localize "languages-rp.notifications.allLanguagesAssigned"}}</p>
+        {{/if}}
+    </div>
+    
+    <div class="languages-rp-tab-content" data-tab="known-words">
+        <div class="known-words-language-selector">
+            <select class="known-words-language-select">
+                <option value="">{{localize "languages-rp.ui.selectLanguageForKnownWords"}}</option>
+                {{#each allLanguagesWithKnownWords}}
+                <option value="{{this.id}}">{{this.name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <div class="known-words-container">
+            {{#each allLanguagesWithKnownWords}}
+            <div class="known-words-list" data-lang-id="{{this.id}}" style="display: none;">
+                {{#if this.knownWords}}
+                {{#each this.knownWords}}
+                <div class="known-word-item">
+                    <input type="text" class="known-word-input" value="{{this}}" />
+                    <button type="button" class="remove-known-word"><i class="fas fa-times"></i></button>
+                </div>
+                {{/each}}
+                {{/if}}
+                <div class="add-known-word-container">
+                    <input type="text" class="new-known-word-input" placeholder="{{localize "languages-rp.ui.knownWordPlaceholder"}}" />
+                    <button type="button" class="add-known-word"><i class="fas fa-plus"></i></button>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</form>

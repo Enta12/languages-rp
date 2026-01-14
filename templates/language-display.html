@@ -41,16 +41,21 @@
         {{title}}
     </header>
     <p
-        class="language-translation language-content language-rp-font-{{langId}}"
+        class="language-translation language-content{{#if showFont}} language-rp-font-{{langId}}{{/if}}"
         title="{{langId}}"
-        data-encrypted="{{content}}"
+        data-encrypted="{{encryptedContent}}"
     >
-        {{content}}
+        {{displayContent}}
     </p>
     <div class="language-translation-actions">
         {{#if addEncryptBtn}}
             <button class="language-translation-action encrypt-btn" style="background-color: #aeaeae;">
                 {{localize "languages-rp.ui.encrypt"}}
+            </button>
+        {{/if}}
+        {{#if hasKnownWordsOnly}}
+            <button class="language-translation-action known-words-btn" style="background-color: #4a90e2;">
+                {{localize "languages-rp.ui.decryptKnownWords"}}
             </button>
         {{/if}}
         {{#each levels}}
